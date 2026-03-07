@@ -1,0 +1,1102 @@
+<!doctype html>
+<html lang="es-CO">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Altos del Roble - Sistema inmobiliario</title>
+    <style>
+      img {
+        mask-image: linear-gradient(white 80%, transparent);
+      }
+    </style>
+  </head>
+  <body class="font-sans bg-gray-50 text-gray-900">
+    <!-- NAVBAR -->
+    <nav class="sticky top-0 z-50 w-full backdrop-blur-lg border-b">
+      <div class="max-w-6xl mx-auto px-6 py-4">
+        <div class="flex items-center justify-between gap-6">
+          
+          <!-- LEFT: Logo -->
+          <a href="#" class="flex items-center gap-2 no-underline">
+            <div class="flex gap-0.5">
+              <span class="w-3 h-8 rounded-full bg-gray-900"></span>
+              <span class="w-5 h-5 rounded-full bg-gray-900"></span>
+            </div>
+            <span class="text-xl font-bold tracking-wider text-gray-900" style="font-family: 'SF Pro Display', sans-serif; font-weight: 600;">ALTOS DEL ROBLE</span>
+          </a>
+
+          <!-- CENTER: Nav Links (Icons only - Desktop) -->
+          <div class="hidden md:flex items-center gap-3">
+            <!-- Inicio -->
+            <a href="#home" class="nav-link group relative flex flex-col items-center gap-1 px-2 py-2 rounded-full text-gray-500 hover:text-gray-900 hover:bg-black/6 transition-colors" title="Inicio">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5 stroke-2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+              </svg>
+            </a>
+
+            <!-- Disponibles -->
+            <a href="#disponibles" class="nav-link group relative flex flex-col items-center gap-1 px-2 py-2 rounded-full text-gray-500 hover:text-gray-900 hover:bg-black/6 transition-colors" title="Disponibles">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5 stroke-2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+              </svg>
+            </a>
+
+            <!-- Viviendas -->
+            <a href="#viviendas" class="nav-link group relative flex flex-col items-center gap-1 px-2 py-2 rounded-full text-gray-500 hover:text-gray-900 hover:bg-black/6 transition-colors" title="Viviendas">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5 stroke-2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+              </svg>
+            </a>
+
+            <!-- Lotes -->
+            <a href="#lotes" class="nav-link group relative flex flex-col items-center gap-1 px-2 py-2 rounded-full text-gray-500 hover:text-gray-900 hover:bg-black/6 transition-colors" title="Lotes">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5 stroke-2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+              </svg>
+            </a>
+
+            <!-- Contacto -->
+            <a href="#contacto" class="nav-link group relative flex flex-col items-center gap-1 px-2 py-2 rounded-full text-gray-500 hover:text-gray-900 hover:bg-black/6 transition-colors" title="Contacto">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5 stroke-2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+            </a>
+          </div>
+
+          <!-- RIGHT: Actions (Login/Signup) -->
+          <div class="flex items-center gap-3">
+
+            <!-- Registrarse -->
+            <a href="src/pages/auth/login.html" class="hidden sm:inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gray-900 text-white hover:bg-gray-800 transition-all text-sm font-medium">
+              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0z"></path><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm15 0h-2v3h-3v2h3v3h2v-3h3v-2h-3z"></path></svg>
+              Acceder al Portal
+            </a>
+
+            <!-- COMENTADO: Botones cuando está logueado -->
+            <!--
+            <div class="hidden md:flex items-center gap-2">
+              <button class="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition" title="Favoritos">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+              </button>
+              <button class="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition relative" title="Notificaciones">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                <span class="absolute top-0 right-0 w-2 h-2 rounded-full bg-amber-600"></span>
+              </button>
+              <button class="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition relative" title="Mensajes">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                </svg>
+                <span class="absolute top-0 right-0 w-2 h-2 rounded-full bg-amber-600"></span>
+              </button>
+              <div class="w-9 h-9 rounded-full border-2 border-amber-600 flex items-center justify-center bg-gradient-to-br from-amber-400 to-amber-600 text-white text-xs font-semibold cursor-pointer">
+                AD
+              </div>
+            </div>
+            -->
+
+            <!-- Hamburguesa (mobile) -->
+            <button id="menuToggle" class="md:hidden text-gray-900 text-xl">
+              ≡
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Menú Mobile (inicialmente oculto) -->
+      <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-200">
+        <div class="px-6 py-4 space-y-3">
+          <a href="#home" class="flex items-center gap-3 text-gray-700 hover:text-gray-900 py-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            Inicio
+          </a>
+          <a href="#disponibles" class="flex items-center gap-3 text-gray-700 hover:text-gray-900 py-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+            </svg>
+            Disponibles
+          </a>
+          <a href="#viviendas" class="flex items-center gap-3 text-gray-700 hover:text-gray-900 py-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+            </svg>
+            Viviendas
+          </a>
+          <a href="#lotes" class="flex items-center gap-3 text-gray-700 hover:text-gray-900 py-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+            </svg>
+            Lotes
+          </a>
+          <a href="#contacto" class="flex items-center gap-3 text-gray-700 hover:text-gray-900 py-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            Contacto
+          </a>
+          <hr class="my-3">
+          
+          <button class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800">
+            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0z"></path><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm15 0h-2v3h-3v2h3v3h2v-3h3v-2h-3z"></path></svg>
+            Acceder al Portal
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container max-w-full mx-auto space-y-20">
+
+      <section id="home" class="relative w-full h-screen min-h-screen bg-[#f6f4ef] overflow-visible">
+
+  <!-- IMAGEN FULLSCREEN CON CONTENIDO SUPERPUESTO -->
+  <div class="absolute inset-0 w-full h-full">
+    <img 
+      src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80" 
+      alt="Residencia Minimalista"
+      class="hero-image w-full h-full object-cover"
+      id="heroMainImage">
+  </div>
+
+  <!-- CONTENIDO FLOTTANTE SUPERPUESTO -->
+  <div class="absolute inset-0 flex flex-col justify-between p-4 sm:p-6 md:p-8 lg:p-16 z-20">
+
+    <!-- TITULO Y RATING (ARRIBA) -->
+    <div class="pt-8 bg-black/5 p-3 mb-3 rounded-2xl backdrop-blur-2xl md:pt-16 max-w-2xl">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight md:leading-tight text-slate-100 mb-4 drop-shadow-2xl" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700; text-shadow: 0 4px 12px rgba(0,0,0,0.35);">
+        Tu hogar en <br class="hidden sm:block" /> Altos del Roble
+      </h1>
+
+      <p class="text-slate-100/95 text-sm md:text-lg max-w-xl leading-relaxed drop-shadow-lg">
+        Proyecto inmobiliario en Bogotá con lotes urbanizados, financiación flexible y acompañamiento completo en tu proceso de compra.
+      </p>
+
+      <div class="mt-4 flex flex-wrap gap-2">
+        <span class="px-3 py-1 rounded-full bg-white/20 text-white text-xs md:text-sm font-medium border border-white/30">Financiación directa</span>
+        <span class="px-3 py-1 rounded-full bg-white/20 text-white text-xs md:text-sm font-medium border border-white/30">Escrituración segura</span>
+        <span class="px-3 py-1 rounded-full bg-white/20 text-white text-xs md:text-sm font-medium border border-white/30">Entrega inmediata</span>
+      </div>
+
+      <div class="flex items-center gap-3 mt-4 drop-shadow-lg">
+        <div class="flex gap-0.5">
+          <span class="text-amber-300 text-xl drop-shadow-md">★</span>
+          <span class="text-amber-300 text-xl drop-shadow-md">★</span>
+          <span class="text-amber-300 text-xl drop-shadow-md">★</span>
+          <span class="text-amber-300 text-xl drop-shadow-md">★</span>
+          <span class="text-amber-300 text-xl drop-shadow-md">★</span>
+        </div>
+        <span class="font-semibold text-slate-100 text-base md:text-lg drop-shadow-md">4.8</span>
+        <span class="text-slate-200/90 text-sm md:text-base drop-shadow-md">(760+ Reseñas)</span>
+      </div>
+    </div>
+
+    <!-- GALERIA + PRECIO + BOTON (ABAJO) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-end pb-6 md:pb-12 bg-white/10 backdrop-blur-sm rounded-2xl p-4 md:p-6">
+
+      <!-- GALERIA (col 1-2) -->
+      <div class="md:col-span-2">
+        <p class="text-xs md:text-sm font-semibold text-slate-200/90 uppercase tracking-widest mb-3 drop-shadow-md" style="font-family: 'SF Pro Display', sans-serif; font-weight: 600;">Galería</p>
+        <div class="flex gap-3 overflow-x-auto px-1 pb-2 scroll-smooth" style="scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent;">
+          <!-- Imagen 1 Principal (Seleccionada) -->
+          <div class="hero-thumb is-active shrink-0 w-28 md:w-36 h-20 md:h-28 rounded-xl overflow-hidden shadow-xl cursor-pointer transition-all" data-hero-image="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300&q=80"
+                 alt="Vista principal"
+                 class="w-full h-full object-cover">
+          </div>
+
+          <!-- Imagen 2 -->
+          <div class="hero-thumb shrink-0 w-28 md:w-36 h-20 md:h-28 rounded-xl overflow-hidden opacity-70 hover:opacity-100 transition-opacity shadow-lg cursor-pointer" data-hero-image="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&q=80">
+            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=300&q=80"
+                 alt="Detalle 1"
+                 class="w-full h-full object-cover">
+          </div>
+
+                  <!-- Imagen 5 -->
+          <div class="hero-thumb shrink-0 w-28 md:w-36 h-20 md:h-28 rounded-xl overflow-hidden opacity-70 hover:opacity-100 transition-opacity shadow-lg cursor-pointer" data-hero-image="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1600&q=80">
+            <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=300&q=80"
+                 alt="Detalle 4"
+                 class="w-full h-full object-cover">
+          </div>
+
+          <!-- Imagen 6 -->
+          <div class="hero-thumb shrink-0 w-28 md:w-36 h-20 md:h-28 rounded-xl overflow-hidden opacity-70 hover:opacity-100 transition-opacity shadow-lg cursor-pointer" data-hero-image="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=1600&q=80">
+            <img src="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=300&q=80"
+                 alt="Detalle 5"
+                 class="w-full h-full object-cover">
+          </div>
+
+          <!-- Imagen 7 -->
+          <div class="hero-thumb shrink-0 w-28 md:w-36 h-20 md:h-28 rounded-xl overflow-hidden opacity-70 hover:opacity-100 transition-opacity shadow-lg cursor-pointer" data-hero-image="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1600&q=80">
+            <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&q=80"
+                 alt="Detalle 6"
+                 class="w-full h-full object-cover">
+          </div>
+
+          <!-- Imagen 8 -->
+          <div class="hero-thumb shrink-0 w-28 md:w-36 h-20 md:h-28 rounded-xl overflow-hidden opacity-70 hover:opacity-100 transition-opacity shadow-lg cursor-pointer" data-hero-image="https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1600&q=80">
+            <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=300&q=80"
+                 alt="Detalle 7"
+                 class="w-full h-full object-cover">
+          </div>
+
+          <!-- Imagen 9 -->
+          <div class="hero-thumb shrink-0 w-28 md:w-36 h-20 md:h-28 rounded-xl overflow-hidden opacity-70 hover:opacity-100 transition-opacity shadow-lg cursor-pointer" data-hero-image="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1600&q=80">
+            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=300&q=80"
+                 alt="Detalle 8"
+                 class="w-full h-full object-cover">
+          </div>
+        </div>
+      </div>
+
+      <!-- PRECIO + BOTON (col 3) -->
+      <div class="flex flex-col gap-3">
+        <div>
+          <p class="text-xs md:text-sm font-semibold text-gray-900 uppercase tracking-widest mb-1 drop-shadow-md" style="font-family: 'SF Pro Display', sans-serif; font-weight: 600;">Desde</p>
+          <p class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 drop-shadow-2xl" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700; text-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+            $2.7M
+          </p>
+          <p class="text-xs md:text-sm text-gray-700 mt-1 drop-shadow-md">Precio de referencia</p>
+        </div>
+
+        <button class="inline-flex items-center justify-center gap-2 w-full md:w-auto px-5 py-2.5 rounded-full bg-gray-900 text-white hover:bg-gray-800 transition-all text-sm font-medium"
+                style="font-family: 'SF Pro Display', sans-serif; font-weight: 600;">
+          Iniciar proceso de compra
+        </button>
+      </div>
+
+    </div>
+
+    <div class="mt-4 md:mt-6 bg-white/90 backdrop-blur-sm rounded-2xl border border-white/40 shadow-sm p-4 md:p-6">
+      <div class="flex flex-col lg:flex-row justify-between gap-5">
+        <div class="flex-1">
+          <p class="text-xs font-semibold text-amber-600 uppercase tracking-widest mb-1.5">Lote disponible</p>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-2" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700;">
+            Altos del Roble, Bogota, Colombia
+          </h2>
+          <p class="text-gray-600 leading-relaxed text-sm md:text-base">
+            Lote premium con acceso directo a vias principales, zonas verdes y servicios urbanos. Diseno pensado para una vivienda amplia, iluminada y funcional, con espacios sociales integrados y area privada optimizada.
+          </p>
+        </div>
+
+        <div class="w-full lg:w-64">
+          <div class="rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
+            <iframe
+              title="Ubicacion del lote"
+              class="w-full h-36"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=-74.130%2C4.584%2C-74.050%2C4.656&amp;layer=mapnik&amp;marker=4.62%2C-74.09">
+            </iframe>
+          </div>
+          <p class="text-xs text-gray-500 mt-1.5">Ubicacion aproximada</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5">
+        <div class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5">
+          <p class="text-xs text-gray-500">Habitaciones</p>
+          <p class="text-lg font-semibold text-gray-900">4</p>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5">
+          <p class="text-xs text-gray-500">Baños</p>
+          <p class="text-lg font-semibold text-gray-900">3</p>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5">
+          <p class="text-xs text-gray-500">Area privada</p>
+          <p class="text-lg font-semibold text-gray-900">120 m2</p>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5">
+          <p class="text-xs text-gray-500">Area total</p>
+          <p class="text-lg font-semibold text-gray-900">180 m2</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+    <!-- SOBRE NOSOTROS -->
+    <section id="sobre" class="py-20 bg-white">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <p class="text-amber-600 font-semibold text-sm uppercase tracking-wider mb-3">Quiénes Somos</p>
+          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700;">Altos del Roble</h2>
+          <p class="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
+            Un proyecto inmobiliario construido con pasión, diseñado para crear hogares donde las familias puedan crecer, soñar y prosperar.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+          <div>
+            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80" 
+                 alt="Desarrollo urbano" 
+                 class="rounded-2xl shadow-2xl w-full h-96 object-cover">
+          </div>
+          <div class="space-y-6">
+            <div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-3" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700;">Nuestra Historia</h3>
+              <p class="text-gray-600 leading-relaxed">
+                Desde 2020, Altos del Roble se ha consolidado como un referente en desarrollo inmobiliario sostenible en Bogotá. Con más de 15 hectáreas de terreno urbanizado, hemos entregado más de 320 viviendas a familias colombianas.
+              </p>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-3" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700;">Nuestra Misión</h3>
+              <p class="text-gray-600 leading-relaxed">
+                Crear espacios habitacionales de calidad que combinen diseño moderno, funcionalidad y sostenibilidad, permitiendo a las familias acceder a su vivienda propia en un entorno seguro y conectado.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Valores y estadísticas -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div class="text-center p-6 rounded-xl bg-gray-50 border border-gray-200">
+            <p class="text-4xl font-bold text-amber-600 mb-2">320+</p>
+            <p class="text-gray-600 text-sm font-medium">Familias con hogar</p>
+          </div>
+          <div class="text-center p-6 rounded-xl bg-gray-50 border border-gray-200">
+            <p class="text-4xl font-bold text-amber-600 mb-2">15Ha</p>
+            <p class="text-gray-600 text-sm font-medium">Terreno urbanizado</p>
+          </div>
+          <div class="text-center p-6 rounded-xl bg-gray-50 border border-gray-200">
+            <p class="text-4xl font-bold text-amber-600 mb-2">4.8★</p>
+            <p class="text-gray-600 text-sm font-medium">Calificación promedio</p>
+          </div>
+          <div class="text-center p-6 rounded-xl bg-gray-50 border border-gray-200">
+            <p class="text-4xl font-bold text-amber-600 mb-2">6</p>
+            <p class="text-gray-600 text-sm font-medium">Años de experiencia</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOTES DISPONIBLES -->
+    <section id="disponibles" class="py-20 bg-gray-50">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <p class="text-amber-600 font-semibold text-sm uppercase tracking-wider mb-3">Oportunidades</p>
+          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700;">Lotes Disponibles</h2>
+          <p class="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
+            Descubre nuestros lotes urbanizados listos para construir tu hogar. Ubicados estratégicamente con acceso a vías principales, zonas verdes y servicios urbanos, cada lote ofrece el espacio ideal para diseñar la vivienda de tus sueños.
+          </p>
+        </div>
+
+        <div id="lotes-disponibles-grid" class="grid md:grid-cols-3 gap-8">
+          <div class="col-span-full text-center py-10 text-gray-500">Cargando lotes disponibles...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODELOS DE VIVIENDA -->
+    <section id="viviendas" class="py-20 bg-white">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <p class="text-amber-600 font-semibold text-sm uppercase tracking-wider mb-3">Modelos</p>
+          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700;">Diseños de Vivienda</h2>
+          <p class="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
+            Diferentes modelos adaptados a las necesidades de tu familia, con espacios funcionales y acabados de primera calidad.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+          <!-- Modelo 1 -->
+          <div class="group bg-gray-50 rounded-2xl overflow-hidden border border-gray-200 hover:shadow-2xl transition-all">
+            <div class="relative h-64 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80" 
+                   alt="Modelo Clásico" 
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              <div class="absolute top-4 right-4">
+                <span class="px-4 py-2 rounded-full bg-amber-600 text-white text-xs font-semibold shadow-lg">MÁS POPULAR</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-2xl font-bold text-gray-900 mb-3" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700;">Modelo Clásico</h3>
+              <p class="text-gray-600 mb-6 leading-relaxed">
+                Diseño tradicional de dos plantas con espacios amplios y bien distribuidos. Ideal para familias de 4-5 personas.
+              </p>
+              
+              <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="text-center">
+                  <p class="text-2xl font-bold text-amber-600">3</p>
+                  <p class="text-xs text-gray-500">Habitaciones</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-2xl font-bold text-amber-600">2.5</p>
+                  <p class="text-xs text-gray-500">Baños</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-2xl font-bold text-amber-600">110m²</p>
+                  <p class="text-xs text-gray-500">Área const.</p>
+                </div>
+              </div>
+
+              <ul class="space-y-2 mb-6">
+                <li class="flex items-center gap-2 text-sm text-gray-600">
+                  <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  Sala-comedor integrados
+                </li>
+                <li class="flex items-center gap-2 text-sm text-gray-600">
+                  <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  Cocina integral
+                </li>
+                <li class="flex items-center gap-2 text-sm text-gray-600">
+                  <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  Garaje para 2 vehículos
+                </li>
+                <li class="flex items-center gap-2 text-sm text-gray-600">
+                  <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  Patio posterior
+                </li>
+              </ul>
+
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-xs text-gray-500">Desde</p>
+                  <p class="text-3xl font-bold text-gray-900">$380M</p>
+                </div>
+                <button class="details-trigger px-6 py-2.5 rounded-full bg-gray-900 text-white hover:bg-gray-800 transition-all text-sm font-medium"
+                        data-title="Modelo Clásico"
+                        data-subtitle="Vivienda familiar tradicional"
+                        data-price="Desde $380M"
+                        data-description="Distribución de dos niveles, excelente iluminación natural y acabados funcionales para una familia de 4 a 5 personas."
+                        data-features="3 habitaciones|2.5 baños|110 m² construidos|Garaje para 2 vehículos|Patio posterior">
+                  Ver detalles
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modelo 2 -->
+          <div class="group bg-gray-50 rounded-2xl overflow-hidden border border-gray-200 hover:shadow-2xl transition-all">
+            <div class="relative h-64 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" 
+                   alt="Modelo Premium" 
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              <div class="absolute top-4 right-4">
+                <span class="px-4 py-2 rounded-full bg-purple-600 text-white text-xs font-semibold shadow-lg">PREMIUM</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-2xl font-bold text-gray-900 mb-3" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700;">Modelo Premium</h3>
+              <p class="text-gray-600 mb-6 leading-relaxed">
+                Diseño contemporáneo de tres plantas con acabados de lujo y espacios versátiles. Para familias que buscan exclusividad.
+              </p>
+              
+              <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="text-center">
+                  <p class="text-2xl font-bold text-purple-600">4</p>
+                  <p class="text-xs text-gray-500">Habitaciones</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-2xl font-bold text-purple-600">3.5</p>
+                  <p class="text-xs text-gray-500">Baños</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-2xl font-bold text-purple-600">180m²</p>
+                  <p class="text-xs text-gray-500">Área const.</p>
+                </div>
+              </div>
+
+              <ul class="space-y-2 mb-6">
+                <li class="flex items-center gap-2 text-sm text-gray-600">
+                  <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  Suite principal con vestier
+                </li>
+                <li class="flex items-center gap-2 text-sm text-gray-600">
+                  <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  Estudio/oficina
+                </li>
+                <li class="flex items-center gap-2 text-sm text-gray-600">
+                  <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  Terraza con BBQ
+                </li>
+                <li class="flex items-center gap-2 text-sm text-gray-600">
+                  <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  Sistema domótica
+                </li>
+              </ul>
+
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-xs text-gray-500">Desde</p>
+                  <p class="text-3xl font-bold text-gray-900">$620M</p>
+                </div>
+                <button class="details-trigger px-6 py-2.5 rounded-full bg-gray-900 text-white hover:bg-gray-800 transition-all text-sm font-medium"
+                        data-title="Modelo Premium"
+                        data-subtitle="Diseño contemporáneo de alta gama"
+                        data-price="Desde $620M"
+                        data-description="Modelo de tres niveles con espacios versátiles, terraza social y terminaciones premium para un estilo de vida exclusivo."
+                        data-features="4 habitaciones|3.5 baños|180 m² construidos|Terraza BBQ|Domótica integrada">
+                  Ver detalles
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Beneficios -->
+        <div class="bg-linear-to-br from-amber-50 to-orange-50 rounded-2xl p-8 border border-amber-200">
+          <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700;">¿Por qué elegir nuestras viviendas?</h3>
+          <div class="grid md:grid-cols-4 gap-6">
+            <div class="text-center">
+              <div class="w-12 h-12 rounded-full bg-amber-600 text-white flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+              </div>
+              <p class="font-semibold text-gray-900 mb-1">Garantía</p>
+              <p class="text-sm text-gray-600">5 años en estructura</p>
+            </div>
+            <div class="text-center">
+              <div class="w-12 h-12 rounded-full bg-amber-600 text-white flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <p class="font-semibold text-gray-900 mb-1">Financiación</p>
+              <p class="text-sm text-gray-600">Planes flexibles</p>
+            </div>
+            <div class="text-center">
+              <div class="w-12 h-12 rounded-full bg-amber-600 text-white flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                </svg>
+              </div>
+              <p class="font-semibold text-gray-900 mb-1">Calidad</p>
+              <p class="text-sm text-gray-600">Materiales premium</p>
+            </div>
+            <div class="text-center">
+              <div class="w-12 h-12 rounded-full bg-amber-600 text-white flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+              </div>
+              <p class="font-semibold text-gray-900 mb-1">Asesoría</p>
+              <p class="text-sm text-gray-600">Personalizada 24/7</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOTES DISPONIBLES -->
+    <section id="lotes" class="py-20 bg-gray-50">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <p class="text-amber-600 font-semibold text-sm uppercase tracking-wider mb-3">Disponibilidad</p>
+          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700;">Lotes Destacados</h2>
+          <p class="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
+            Selección de lotes premium con ubicación privilegiada. ¡Invierte en tu futuro hoy!
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+          <!-- Lote 1 -->
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-2xl transition-shadow">
+            <div class="relative h-48">
+              <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80" 
+                   alt="Lote 23" 
+                   class="w-full h-full object-cover">
+              <div class="absolute top-3 left-3">
+                <span class="px-3 py-1 rounded-full bg-green-600 text-white text-xs font-semibold">DISPONIBLE</span>
+              </div>
+              <div class="absolute top-3 right-3">
+                <span class="px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-gray-900 text-xs font-semibold">Etapa 2</span>
+              </div>
+            </div>
+            <div class="p-5">
+              <h3 class="text-xl font-bold text-gray-900 mb-2">Lote 023</h3>
+              <p class="text-gray-600 text-sm mb-4">Esquinero con doble acceso, ideal para construcción vertical</p>
+              
+              <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="bg-gray-50 rounded-lg p-2.5 text-center">
+                  <p class="text-xs text-gray-500">Área</p>
+                  <p class="text-lg font-bold text-gray-900">150m²</p>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-2.5 text-center">
+                  <p class="text-xs text-gray-500">Frente</p>
+                  <p class="text-lg font-bold text-gray-900">10m</p>
+                </div>
+              </div>
+
+              <div class="border-t border-gray-200 pt-4">
+                <div class="flex items-center justify-between mb-3">
+                  <p class="text-sm text-gray-500">Precio</p>
+                  <p class="text-2xl font-bold text-gray-900">$165M</p>
+                </div>
+                <button class="details-trigger w-full py-2.5 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition-all text-sm font-medium"
+                        data-title="Lote 023"
+                        data-subtitle="Esquinero con doble acceso"
+                        data-price="$165M"
+                        data-description="Lote esquinero con frente amplio y excelente ventilación. Ideal para vivienda de dos pisos con zona social amplia."
+                        data-features="Área total: 150 m²|Frente: 10 m|Estado: Disponible|Ubicación: Zona central|Uso recomendado: Residencial familiar">
+                  Ver detalles
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lote 2 -->
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-2xl transition-shadow">
+            <div class="relative h-48">
+              <img src="https://images.unsplash.com/photo-1464146072230-91cabc968266?w=600&q=80" 
+                   alt="Lote 45" 
+                   class="w-full h-full object-cover">
+              <div class="absolute top-3 left-3">
+                <span class="px-3 py-1 rounded-full bg-green-600 text-white text-xs font-semibold">DISPONIBLE</span>
+              </div>
+              <div class="absolute top-3 right-3">
+                <span class="px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-gray-900 text-xs font-semibold">Etapa 2</span>
+              </div>
+            </div>
+            <div class="p-5">
+              <h3 class="text-xl font-bold text-gray-900 mb-2">Lote 045</h3>
+              <p class="text-gray-600 text-sm mb-4">Vista panorámica, ubicación central cerca del parque</p>
+              
+              <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="bg-gray-50 rounded-lg p-2.5 text-center">
+                  <p class="text-xs text-gray-500">Área</p>
+                  <p class="text-lg font-bold text-gray-900">180m²</p>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-2.5 text-center">
+                  <p class="text-xs text-gray-500">Frente</p>
+                  <p class="text-lg font-bold text-gray-900">12m</p>
+                </div>
+              </div>
+
+              <div class="border-t border-gray-200 pt-4">
+                <div class="flex items-center justify-between mb-3">
+                  <p class="text-sm text-gray-500">Precio</p>
+                  <p class="text-2xl font-bold text-gray-900">$195M</p>
+                </div>
+                <button class="details-trigger w-full py-2.5 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition-all text-sm font-medium"
+                        data-title="Lote 045"
+                        data-subtitle="Vista panorámica y ubicación estratégica"
+                        data-price="$195M"
+                        data-description="Lote con ubicación privilegiada cerca del parque principal, ideal para proyecto residencial con valorización alta."
+                        data-features="Área total: 180 m²|Frente: 12 m|Estado: Disponible|Ubicación: Cerca del parque|Potencial: Alta valorización">
+                  Ver detalles
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lote 3 -->
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-2xl transition-shadow">
+            <div class="relative h-48">
+              <img src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=600&q=80" 
+                   alt="Lote 67" 
+                   class="w-full h-full object-cover">
+              <div class="absolute top-3 left-3">
+                <span class="px-3 py-1 rounded-full bg-green-600 text-white text-xs font-semibold">DISPONIBLE</span>
+              </div>
+              <div class="absolute top-3 right-3">
+                <span class="px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-gray-900 text-xs font-semibold">Etapa 2</span>
+              </div>
+            </div>
+            <div class="p-5">
+              <h3 class="text-xl font-bold text-gray-900 mb-2">Lote 067</h3>
+              <p class="text-gray-600 text-sm mb-4">Acceso directo a zona verde, tranquilo y seguro</p>
+              
+              <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="bg-gray-50 rounded-lg p-2.5 text-center">
+                  <p class="text-xs text-gray-500">Área</p>
+                  <p class="text-lg font-bold text-gray-900">140m²</p>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-2.5 text-center">
+                  <p class="text-xs text-gray-500">Frente</p>
+                  <p class="text-lg font-bold text-gray-900">9m</p>
+                </div>
+              </div>
+
+              <div class="border-t border-gray-200 pt-4">
+                <div class="flex items-center justify-between mb-3">
+                  <p class="text-sm text-gray-500">Precio</p>
+                  <p class="text-2xl font-bold text-gray-900">$155M</p>
+                </div>
+                <button class="details-trigger w-full py-2.5 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition-all text-sm font-medium"
+                        data-title="Lote 067"
+                        data-subtitle="Tranquilidad y acceso a zona verde"
+                        data-price="$155M"
+                        data-description="Ubicado en un punto tranquilo del proyecto, con acceso directo a áreas verdes y circulación peatonal segura."
+                        data-features="Área total: 140 m²|Frente: 9 m|Estado: Disponible|Entorno: Zona verde|Ideal para: Primera vivienda">
+                  Ver detalles
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="bg-linear-to-r from-gray-900 to-gray-800 rounded-2xl p-8 md:p-12 text-center text-white">
+          <h3 class="text-3xl md:text-4xl font-bold mb-4" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700;">¿Listo para invertir en tu futuro?</h3>
+          <p class="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
+            Agenda una visita guiada sin compromiso y conoce personalmente nuestros lotes y modelos de vivienda.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="src/pages/auth/login.html" class="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-amber-600 text-white hover:bg-amber-700 transition-all text-base font-semibold">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+              </svg>
+              Acceder al Portal
+            </a>
+            <a href="#contacto" class="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all text-base font-semibold border border-white/30">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+              Contactar Asesor
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contacto" class="py-20 bg-white">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <p class="text-amber-600 font-semibold text-sm uppercase tracking-wider mb-3">Hablemos</p>
+          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700;">Contáctanos</h2>
+          <p class="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
+            Nuestro equipo está listo para ayudarte a encontrar el hogar perfecto para ti y tu familia.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-12">
+          <!-- Formulario -->
+          <div class="bg-gray-50 rounded-2xl p-8 border border-gray-200">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700;">Envíanos un mensaje</h3>
+            <form class="space-y-5">
+              <div>
+                <label for="contact-name" class="block text-sm font-semibold text-gray-700 mb-2">Nombre completo</label>
+                <input type="text" id="contact-name" 
+                       class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-600 focus:border-transparent outline-none transition"
+                       placeholder="Juan Pérez">
+              </div>
+
+              <div>
+                <label for="contact-email" class="block text-sm font-semibold text-gray-700 mb-2">Correo electrónico</label>
+                <input type="email" id="contact-email" 
+                       class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-600 focus:border-transparent outline-none transition"
+                       placeholder="tu@email.com">
+              </div>
+
+              <div>
+                <label for="contact-phone" class="block text-sm font-semibold text-gray-700 mb-2">Teléfono</label>
+                <input type="tel" id="contact-phone" 
+                       class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-600 focus:border-transparent outline-none transition"
+                       placeholder="+57 300 123 4567">
+              </div>
+
+              <div>
+                <label for="contact-interest" class="block text-sm font-semibold text-gray-700 mb-2">Estoy interesado en</label>
+                <select id="contact-interest" 
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-600 focus:border-transparent outline-none transition">
+                  <option value="">Selecciona una opción</option>
+                  <option value="lotes">Compra de lote</option>
+                  <option value="vivienda">Vivienda nueva</option>
+                  <option value="proyecto">Proyecto personalizado</option>
+                  <option value="info">Información general</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="contact-message" class="block text-sm font-semibold text-gray-700 mb-2">Mensaje</label>
+                <textarea id="contact-message" rows="4" 
+                          class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-600 focus:border-transparent outline-none transition resize-none"
+                          placeholder="Cuéntanos más sobre lo que buscas..."></textarea>
+              </div>
+
+              <button type="submit" 
+                      class="w-full py-3.5 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition-all font-semibold">
+                Enviar mensaje
+              </button>
+            </form>
+          </div>
+
+          <!-- Información de contacto -->
+          <div class="space-y-8">
+            <div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-6" style="font-family: 'SF Pro Display', sans-serif; font-weight: 700;">Información de contacto</h3>
+              
+              <div class="space-y-6">
+                <div class="flex gap-4">
+                  <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-gray-900 mb-1">Oficina de ventas</p>
+                    <p class="text-gray-600">Calle 123 #45-67, Bogotá, Colombia</p>
+                    <p class="text-sm text-gray-500 mt-1">Lunes a Sábado: 8:00 AM - 6:00 PM</p>
+                  </div>
+                </div>
+
+                <div class="flex gap-4">
+                  <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-gray-900 mb-1">Teléfono</p>
+                    <p class="text-gray-600">+57 (300) 123-4567</p>
+                    <p class="text-sm text-gray-500 mt-1">Línea directa de ventas</p>
+                  </div>
+                </div>
+
+                <div class="flex gap-4">
+                  <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-gray-900 mb-1">Email</p>
+                    <p class="text-gray-600">info@altosdelroble.com</p>
+                    <p class="text-sm text-gray-500 mt-1">ventas@altosdelroble.com</p>
+                  </div>
+                </div>
+
+                <div class="flex gap-4">
+                  <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                    <svg class="w-6 h-6 text-amber-600" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-gray-900 mb-1">WhatsApp</p>
+                    <p class="text-gray-600">+57 300 123 4567</p>
+                    <a href="https://wa.me/573001234567" target="_blank" class="inline-flex items-center gap-1 text-sm text-green-600 hover:text-green-700 mt-1">
+                      Enviar mensaje
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mapa -->
+            <div class="rounded-2xl overflow-hidden border border-gray-200 shadow-lg">
+              <iframe
+                title="Ubicación Altos del Roble"
+                class="w-full h-64"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=-74.130%2C4.584%2C-74.050%2C4.656&amp;layer=mapnik&amp;marker=4.62%2C-74.09"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy">
+              </iframe>
+            </div>
+
+            <!-- Redes Sociales -->
+            <div class="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+              <p class="font-semibold text-gray-900 mb-4 text-center">Síguenos en redes sociales</p>
+              <div class="flex justify-center gap-3">
+                <a href="#" class="w-10 h-10 rounded-full bg-white border border-gray-300 flex items-center justify-center text-gray-600 hover:text-blue-600 hover:border-blue-600 transition-all">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5c-.563-.074-2.313-.232-4.991-.232-4.713 0-7.882 2.88-7.882 8.178V8Z"/></svg>
+                </a>
+                <a href="#" class="w-10 h-10 rounded-full bg-white border border-gray-300 flex items-center justify-center text-gray-600 hover:text-pink-600 hover:border-pink-600 transition-all">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path fill="white" d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"/></svg>
+                </a>
+                <a href="#" class="w-10 h-10 rounded-full bg-white border border-gray-300 flex items-center justify-center text-gray-600 hover:text-blue-400 hover:border-blue-400 transition-all">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.5 7-7 7-7z"/></svg>
+                </a>
+                <a href="#" class="w-10 h-10 rounded-full bg-white border border-gray-300 flex items-center justify-center text-gray-600 hover:text-red-600 hover:border-red-600 transition-all">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </div>
+
+    <footer class="bg-gray-50 border-t border-gray-200 mt-20">
+      <div class="max-w-6xl mx-auto px-6 py-16">
+        <!-- Footer Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+          
+          <!-- Columna 1: Branding -->
+          <div>
+            <div class="flex items-center gap-2 mb-4">
+              <div class="flex gap-1">
+                <span class="w-3 h-8 rounded-full bg-gray-900"></span>
+                <span class="w-4 h-4 rounded-full bg-gray-900"></span>
+              </div>
+              <span class="text-lg font-bold tracking-wider text-gray-900" style="font-family: 'SF Pro Display', sans-serif; font-weight: 600;">ALTOS DEL ROBLE</span>
+            </div>
+            <p class="text-gray-600 text-sm leading-relaxed mb-6">
+              Proyecto inmobiliario de vivienda de calidad con acceso a servicios principales y áreas verdes para toda la familia.
+            </p>
+            <div class="flex gap-3">
+              <a href="#" class="w-10 h-10 rounded-full bg-white border border-gray-300 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                  <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5c-.563-.074-2.313-.232-4.991-.232-4.713 0-7.882 2.88-7.882 8.178V8Z"/>
+                </svg>
+              </a>
+              <a href="#" class="w-10 h-10 rounded-full bg-white border border-gray-300 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                  <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.5 7-7 7-7z"/>
+                </svg>
+              </a>
+              <a href="#" class="w-10 h-10 rounded-full bg-white border border-gray-300 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                  <path fill="white" d="M16.6915026,6.4744748 C15.6694941,6.1207084 14.5872792,6.052857 13.4384347,6.3255014 L13.4384347,6.3255014 C12.2895902,6.59814579 11.3271233,7.19502847 10.5909375,8.03946707 L10.5909375,8.03946707 C9.86501032,8.88390564 9.34537217,9.93613743 9.03214722,11.1961346 L9.03214722,11.1961346 C8.71921226,12.4561318 8.61489381,13.8125722 8.71921226,15.173085 L8.71921226,15.173085 L8.71921226,15.173085 C8.82352941,16.5336006 9.13676437,17.8160242 9.65640252,19.0760214 M16.6915026,6.4744748 C17.7135113,6.82813787 18.7499499,7.3949649 19.5957348,8.21340346 M19.5957348,8.21340346 L19.5957348,8.21340346 C20.4415197,9.032842 21.0261454,9.98506274 21.3389702,11.0636533 L21.3389702,11.0636533 C21.6507943,12.1422439 21.6507943,13.2208345 21.3389702,14.2994251 L21.3389702,14.2994251 M19.5957348,8.21340346 C18.9611641,7.64519243 18.0896321,7.30150699 17.1181001,7.19502847"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Columna 2: Links -->
+          <div>
+            <h3 class="text-sm font-semibold text-gray-900 opacity-80 mb-6" style="font-family: 'SF Pro Display', sans-serif; font-weight: 600;">NAVEGACIÓN</h3>
+            <ul class="space-y-3">
+              <li>
+                <a href="#home" class="text-gray-600 hover:text-amber-600 transition-colors text-sm">
+                  Inicio
+                </a>
+              </li>
+              <li>
+                <a href="#disponibles" class="text-gray-600 hover:text-amber-600 transition-colors text-sm">
+                  Disponibles
+                </a>
+              </li>
+              <li>
+                <a href="#viviendas" class="text-gray-600 hover:text-amber-600 transition-colors text-sm">
+                  Modelos de Vivienda
+                </a>
+              </li>
+              <li>
+                <a href="#lotes" class="text-gray-600 hover:text-amber-600 transition-colors text-sm">
+                  Lotes Disponibles
+                </a>
+              </li>
+              <li>
+                <a href="#contacto" class="text-gray-600 hover:text-amber-600 transition-colors text-sm">
+                  Contacto
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Columna 3: Información -->
+          <div>
+            <h3 class="text-sm font-semibold text-gray-900 opacity-80 mb-6" style="font-family: 'SF Pro Display', sans-serif; font-weight: 600;">INFORMACIÓN</h3>
+            <ul class="space-y-4">
+              <li class="flex gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+                <a href="mailto:info@altosdelroble.com" class="text-gray-600 hover:text-amber-600 transition-colors text-sm">
+                  info@altosdelroble.com
+                </a>
+              </li>
+              <li class="flex gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                </svg>
+                <a href="tel:+573001234567" class="text-gray-600 hover:text-amber-600 transition-colors text-sm">
+                  +57 (300) 123-4567
+                </a>
+              </li>
+              <li class="flex gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="text-gray-600 text-sm">
+                  Bogotá, Colombia
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Columna 4: Legal -->
+          <div>
+            <h3 class="text-sm font-semibold text-gray-900 opacity-80 mb-6" style="font-family: 'SF Pro Display', sans-serif; font-weight: 600;">LEGAL</h3>
+            <ul class="space-y-3">
+              <li>
+                <a href="#" class="text-gray-600 hover:text-amber-600 transition-colors text-sm">
+                  Términos de Servicio
+                </a>
+              </li>
+              <li>
+                <a href="#" class="text-gray-600 hover:text-amber-600 transition-colors text-sm">
+                  Política de Privacidad
+                </a>
+              </li>
+              <li>
+                <a href="#" class="text-gray-600 hover:text-amber-600 transition-colors text-sm">
+                  Política de Cookies
+                </a>
+              </li>
+              <li>
+                <a href="#" class="text-gray-600 hover:text-amber-600 transition-colors text-sm">
+                  Aviso Legal
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="pt-8 border-t border-gray-300 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p class="text-gray-500 text-xs text-center md:text-left">
+            © 2026 Altos del Roble. Todos los derechos reservados. | Proyecto inmobiliario de vivienda de calidad.
+          </p>
+          <div class="flex items-center gap-6">
+            <a href="#" class="text-gray-500 hover:text-gray-700 text-xs transition-colors">
+              Mapa del sitio
+            </a>
+            <a href="#" class="text-gray-500 hover:text-gray-700 text-xs transition-colors">
+              Accesibilidad
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <div id="details-modal" class="hidden fixed inset-0 z-50">
+      <div class="absolute inset-0 bg-black/60" data-modal-close="true"></div>
+      <div class="relative min-h-full flex items-center justify-center p-4">
+        <div class="w-full max-w-xl rounded-2xl bg-white border border-gray-200 shadow-2xl overflow-hidden">
+          <div class="flex items-start justify-between gap-3 p-5 border-b border-gray-200">
+            <div>
+              <p id="modal-subtitle" class="text-xs uppercase tracking-wider text-amber-600 font-semibold">Información</p>
+              <h3 id="modal-title" class="text-2xl font-bold text-gray-900">Detalle</h3>
+            </div>
+            <button id="modal-close-btn" class="w-9 h-9 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100" aria-label="Cerrar modal">
+              ✕
+            </button>
+          </div>
+          <div class="p-5 space-y-4">
+            <p id="modal-price" class="text-xl font-bold text-gray-900"></p>
+            <p id="modal-description" class="text-sm text-gray-600 leading-relaxed"></p>
+            <div>
+              <p class="text-sm font-semibold text-gray-900 mb-2">Características:</p>
+              <ul id="modal-features" class="space-y-2 text-sm text-gray-600"></ul>
+            </div>
+          </div>
+          <div class="px-5 pb-5">
+            <button id="modal-primary-action" class="w-full py-2.5 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition-all text-sm font-medium">
+              Entendido
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Altos del Roble – Iniciar Sesión</title>
+  <link rel="stylesheet" href="../../styles/login.css">
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ══ LEFT: Forms panel ══ -->
+  <div class="forms-panel">
+
+    <!-- Sign In -->
+    <div class="form-slide sign-in">
+      <h2>Iniciar Sesión</h2>
+      <p class="sub">Bienvenido de vuelta</p>
+      <form id="sign-in-form" >
+        <div class="field">
+          <ion-icon name="mail-outline"></ion-icon>
+          <input name="correo" type="email" placeholder="Correo electrónico" required>
+        </div>
+        <div class="field">
+          <ion-icon name="lock-closed-outline"></ion-icon>
+          <input name="password" type="password" placeholder="Contraseña" required>
+        </div>
+        <a href="../../pages/auth/forgot-password.html" class="forgot-link">¿Olvidó su contraseña?</a>
+        <button class="btn-main" type="submit">Iniciar Sesión</button>
+        <p id="sign-in-msg" class="form-msg"></p>
+      </form>
+    </div>
+
+    <!-- Sign Up -->
+    <div class="form-slide sign-up">
+      <div class="logo-icon"><ion-icon name="person-add-outline"></ion-icon></div>
+      <h2>Crear cuenta</h2>
+      <p class="sub">Únase al proyecto hoy</p>
+      <form id="sign-up-form">
+        <div class="field">
+          <ion-icon name="person-outline"></ion-icon>
+          <input name="nombre" type="text" placeholder="Nombre completo" required>
+        </div>
+        <div class="field">
+          <ion-icon name="mail-outline"></ion-icon>
+          <input name="correo" type="email" placeholder="Correo electrónico" required>
+        </div>
+        <div class="field">
+          <ion-icon name="lock-closed-outline"></ion-icon>
+          <input name="password" type="password" placeholder="Contraseña" required>
+        </div>
+        <button class="btn-main" type="submit">Registrarse</button>
+        <p id="sign-up-msg" class="form-msg"></p>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- ══ RIGHT: Green welcome panel ══ -->
+  <div class="welcome-panel">
+
+    <!-- Shown by default (user is on sign-in, invite them to register) -->
+    <div class="welcome-content for-signin">
+      <span class="brand-tag">Altos del Roble</span>
+      <h3>¡Bienvenido!</h3>
+      <p>¿No tiene cuenta aún? Regístrese para acceder a todas las funciones del portal</p>
+      <button class="btn-outline" onclick="document.querySelector('.container').classList.add('toggle')">Registrarse</button>
+    </div>
+
+    <!-- Shown when toggled (user is on sign-up, invite them to login) -->
+    <div class="welcome-content for-signup">
+      <span class="brand-tag">Altos del Roble</span>
+      <h3>¡Hola!</h3>
+      <p>¿Ya tiene una cuenta? Inicie sesión para continuar su experiencia</p>
+      <button class="btn-outline" onclick="document.querySelector('.container').classList.remove('toggle')">Iniciar Sesión</button>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="../../js/auth.js"></script>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

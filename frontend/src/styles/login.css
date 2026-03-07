@@ -1,0 +1,785 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --forest: #1a3d2b;
+  --sage: #3ab397;
+  --sage-light: #4ecbb0;
+  --sage-dark: #2a8a72;
+  --cream: #f7f3ee;
+  --white: #ffffff;
+  --charcoal: #2c2c2c;
+  --muted: #7a8a80;
+  --error: #c0392b;
+  --success: #27ae60;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  /* base color behind image */
+  background-color: var(--cream);
+  background-image: url("https://imgs.search.brave.com/KTvp8aQ11JSs1fhyQAMTl2USFyZU84KGODFgIN9xs70/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC93cDQxMTA2/NDcuanBn");
+  background-position: center center;
+  background-repeat: no-repeat;
+  /* make image cover full viewport around the form */
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ── OUTER CARD ── */
+.container {
+  width: 860px;
+  height: 520px;
+  display: flex;
+  border-radius: 20px;
+  overflow: visible;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.15);
+  position: relative;
+  background: transparent;
+}
+
+/* ══ LEFT: forms panel ══ */
+.forms-panel {
+  width: 50%;
+  height: 100%;
+  background: var(--white);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  border-radius: 20px 0 0 20px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
+}
+
+/* Red decorative curves */
+.forms-panel::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 120px;
+  height: 120px;
+  border: 3px solid var(--forest);
+  border-radius: 50%;
+  transform: rotate(45deg) scale(0.8);
+  opacity: 0.6;
+  z-index: 1;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.forms-panel:hover::before {
+  transform: rotate(45deg) scale(0.9);
+  opacity: 0.8;
+}
+
+.forms-panel::after {
+  content: '';
+  position: absolute;
+  bottom: -30px;
+  left: -30px;
+  width: 80px;
+  height: 80px;
+  border: 2px solid var(--forest);
+  border-radius: 50%;
+  transform: rotate(-30deg) scale(1.2);
+  opacity: 0.4;
+  z-index: 1;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.forms-panel:hover::after {
+  transform: rotate(-30deg) scale(1.3);
+  opacity: 0.6;
+}
+
+/* Additional curved decorative elements */
+.forms-panel .decoration-1 {
+  position: absolute;
+  top: 80px;
+  right: 40px;
+  width: 60px;
+  height: 60px;
+  border: 2px solid var(--forest);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(15deg) skew(10deg);
+  opacity: 0.3;
+  z-index: 1;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.forms-panel:hover .decoration-1 {
+  transform: rotate(15deg) skew(10deg) scale(1.1);
+  opacity: 0.5;
+}
+
+.forms-panel .decoration-2 {
+  position: absolute;
+  bottom: 120px;
+  left: 30px;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--forest);
+  border-radius: 0 50% 50% 50%;
+  transform: rotate(-45deg) scale(0.9);
+  opacity: 0.5;
+  z-index: 1;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.forms-panel:hover .decoration-2 {
+  transform: rotate(-45deg) scale(1.0);
+  opacity: 0.7;
+}
+
+.forms-panel .decoration-3 {
+  position: absolute;
+  top: 200px;
+  right: 20px;
+  width: 25px;
+  height: 25px;
+  background: var(--forest);
+  border-radius: 50%;
+  transform: scale(0.8) rotate(60deg);
+  opacity: 0.4;
+  z-index: 1;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.forms-panel:hover .decoration-3 {
+  transform: scale(1.0) rotate(60deg);
+  opacity: 0.6;
+}
+
+.form-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 36px 44px;
+  transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.4s ease;
+}
+
+/* Default: sign-in visible, sign-up hidden off right */
+.form-slide.sign-in {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.form-slide.sign-up {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* Toggled */
+.container.toggle .form-slide.sign-in {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.container.toggle .form-slide.sign-up {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* form elements */
+.form-slide .logo-img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+
+.form-slide .logo-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--sage), var(--sage-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.form-slide .logo-icon ion-icon {
+  font-size: 26px;
+  color: white;
+}
+
+.form-slide h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--forest);
+  margin-bottom: 4px;
+}
+
+.form-slide .sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.field {
+  width: 280px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  background: var(--cream);
+  border: 1.5px solid transparent;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field:focus-within {
+  border-color: var(--sage);
+  box-shadow: 0 0 0 3px rgba(58, 179, 151, 0.12);
+  background: white;
+}
+
+.field ion-icon {
+  font-size: 16px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.field input {
+  border: none;
+  outline: none;
+  width: 100%;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--charcoal);
+}
+
+.field input::placeholder {
+  color: #aab5b0;
+}
+
+.forgot-link {
+  font-size: 12.5px;
+  color: var(--sage-dark);
+  text-decoration: none;
+  margin-bottom: 16px;
+  margin-top: 2px;
+  align-self: flex-start;
+  margin-left: calc(50% - 140px);
+}
+
+.forgot-link:hover {
+  color: var(--forest);
+}
+
+.btn-main {
+  width: 280px;
+  height: 44px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--sage), var(--sage-dark));
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(58, 179, 151, 0.35);
+  transition: transform 0.15s, box-shadow 0.2s;
+  margin-top: 4px;
+}
+
+.btn-main:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(58, 179, 151, 0.45);
+}
+
+.btn-main:active {
+  transform: translateY(0);
+}
+
+.form-msg {
+  margin-top: 10px;
+  font-size: 12.5px;
+  text-align: center;
+  min-height: 16px;
+  width: 280px;
+}
+
+/* ══ RIGHT: green welcome panel ══ */
+.welcome-panel {
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(155deg, #1a3d2b 0%, #0e2418 55%, #1a3d2b 100%);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50% 0 0 50%;
+  transition: border-radius 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+  z-index: 20;
+}
+
+/* Decorative elements for welcome panel */
+.welcome-panel::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  left: -40px;
+  width: 100px;
+  height: 100px;
+  border: 2px solid rgba(78, 203, 176, 0.2);
+  border-radius: 50%;
+  transform: rotate(30deg) scale(0.8);
+  z-index: 1;
+}
+
+.welcome-panel::after {
+  content: '';
+  position: absolute;
+  bottom: -30px;
+  right: -30px;
+  width: 80px;
+  height: 80px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: rotate(-45deg) scale(1.1);
+  z-index: 1;
+}
+
+/* Additional floating decorative elements */
+.welcome-panel .welcome-decoration-1 {
+  position: absolute;
+  top: 100px;
+  left: 60px;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(78, 203, 176, 0.4);
+  border-radius: 50% 0 50% 50%;
+  transform: rotate(45deg);
+  z-index: 1;
+  animation: float 3s ease-in-out infinite;
+}
+
+.welcome-panel .welcome-decoration-2 {
+  position: absolute;
+  bottom: 150px;
+  right: 70px;
+  width: 15px;
+  height: 15px;
+  background: rgba(78, 203, 176, 0.3);
+  border-radius: 50%;
+  transform: scale(0.8);
+  z-index: 1;
+  animation: float 4s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+}
+
+.container.toggle .welcome-panel {
+  border-radius: 0 50% 50% 0;
+}
+
+.welcome-panel::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  border: 55px solid rgba(58, 179, 151, 0.07);
+}
+
+.welcome-panel::after {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  left: -60px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  border: 40px solid rgba(255, 255, 255, 0.04);
+}
+
+.welcome-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 40px;
+  text-align: center;
+  color: white;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+/* Additional decorative elements in welcome content */
+.welcome-content::before {
+  content: '';
+  position: absolute;
+  top: 60px;
+  right: 50px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(78, 203, 176, 0.3);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(20deg);
+  z-index: 1;
+}
+
+.welcome-content::after {
+  content: '';
+  position: absolute;
+  bottom: 80px;
+  left: 40px;
+  width: 25px;
+  height: 25px;
+  background: rgba(78, 203, 176, 0.2);
+  border-radius: 50%;
+  transform: scale(0.8) rotate(-30deg);
+  z-index: 1;
+}
+
+/* Default: "Bienvenido/Registrarse" visible, "Hola/IniciarSesion" hidden */
+.welcome-content.for-signin {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+
+.welcome-content.for-signup {
+  opacity: 0;
+  transform: translateX(20px);
+  pointer-events: none;
+}
+
+/* Toggled: swap */
+.container.toggle .welcome-content.for-signin {
+  opacity: 0;
+  transform: translateX(-20px);
+  pointer-events: none;
+}
+
+.container.toggle .welcome-content.for-signup {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+
+.welcome-content img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.welcome-content .brand-tag {
+  font-size: 10.5px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--sage-light);
+  font-weight: 600;
+}
+
+.welcome-content h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.welcome-content p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.68);
+  line-height: 1.65;
+  max-width: 210px;
+}
+
+.btn-outline {
+  height: 42px;
+  padding: 0 26px;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  border-radius: 10px;
+  background: transparent;
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: white;
+}
+
+/* Enhanced welcome panel interactions */
+.welcome-panel:hover::before {
+  transform: rotate(30deg) scale(0.9);
+  opacity: 0.8;
+}
+
+.welcome-panel:hover::after {
+  transform: rotate(-45deg) scale(1.2);
+  opacity: 0.6;
+}
+
+.welcome-content:hover::before {
+  transform: rotate(20deg) scale(1.1);
+}
+
+.welcome-content:hover::after {
+  transform: scale(0.9) rotate(-30deg);
+}
+
+/* ── STANDALONE PAGES ── */
+.standalone-container {
+  background: var(--white);
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(26, 61, 43, 0.15);
+  padding: 48px 52px;
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeUp 0.45s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Red decorative elements for standalone pages */
+.standalone-container .decoration-1 {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  width: 80px;
+  height: 80px;
+  border: 2px solid var(--forest);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(25deg) skew(5deg);
+  opacity: 0.3;
+  z-index: 1;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.standalone-container:hover .decoration-1 {
+  transform: rotate(25deg) skew(5deg) scale(1.1);
+  opacity: 0.5;
+}
+
+.standalone-container .decoration-2 {
+  position: absolute;
+  bottom: -20px;
+  left: -20px;
+  width: 60px;
+  height: 60px;
+  border: 2px solid var(--forest);
+  border-radius: 0 50% 50% 50%;
+  transform: rotate(-35deg) scale(0.9);
+  opacity: 0.4;
+  z-index: 1;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.standalone-container:hover .decoration-2 {
+  transform: rotate(-35deg) scale(1.0);
+  opacity: 0.6;
+}
+
+.standalone-container .decoration-3 {
+  position: absolute;
+  top: 120px;
+  right: 15px;
+  width: 20px;
+  height: 20px;
+  background: var(--forest);
+  border-radius: 50%;
+  transform: scale(0.7) rotate(45deg);
+  opacity: 0.4;
+  z-index: 1;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.standalone-container:hover .decoration-3 {
+  transform: scale(0.9) rotate(45deg);
+  opacity: 0.6;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.standalone-container .s-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--sage), var(--sage-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 20px rgba(58, 179, 151, 0.3);
+}
+
+.standalone-container .s-icon ion-icon {
+  font-size: 26px;
+  color: white;
+}
+
+.standalone-container h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  color: var(--forest);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.standalone-container .sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 26px;
+  text-align: center;
+  line-height: 1.55;
+}
+
+.standalone-container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 0;
+}
+
+.standalone-container .field {
+  width: 100%;
+  max-width: 310px;
+}
+
+.standalone-container .btn-main {
+  width: 100%;
+  max-width: 310px;
+  margin-top: 6px;
+}
+
+.standalone-container .back-link {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.standalone-container .back-link ion-icon {
+  font-size: 16px;
+}
+
+.standalone-container .back-link a {
+  color: var(--sage-dark);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.standalone-container .back-link a:hover {
+  color: var(--forest);
+}
+
+.s-message {
+  width: 100%;
+  max-width: 310px;
+  margin-top: 10px;
+  font-size: 13px;
+  text-align: center;
+  min-height: 16px;
+  line-height: 1.4;
+}
+
+/* ── Fix form layout inside slides ── */
+.form-slide form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* Sign-up has 4 fields — compact spacing */
+.form-slide.sign-up .logo-icon {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 10px;
+}
+
+.form-slide.sign-up .logo-icon ion-icon {
+  font-size: 20px;
+}
+
+.form-slide.sign-up h2 {
+  font-size: 22px;
+  margin-bottom: 2px;
+}
+
+.form-slide.sign-up .sub {
+  margin-bottom: 12px;
+}
+
+.form-slide.sign-up .field {
+  height: 40px;
+  margin-bottom: 8px;
+}
+
+.form-slide.sign-up .btn-main {
+  height: 40px;
+  margin-top: 6px;
+}
+
+
+
+
+
+.welcome-content {
+  z-index: 21;
+}
+
+.welcome-content button {
+  z-index: 22;
+  position: relative;
+}

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel del Cliente – Altos del Roble</title>
+  <link rel="stylesheet" href="../../styles/panel.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <div>
+        <div class="page-tag">Portal de Clientes</div>
+        <h1>Altos del Roble</h1>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="user-chip">
+        <div class="avatar" id="user-avatar">C</div>
+        <span id="user-name">Cliente</span>
+      </div>
+      <button class="logout-btn" id="logout-btn">
+        <ion-icon name="log-out-outline"></ion-icon>
+        Salir
+      </button>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <img src="./ChatGPT_Image_27_feb_2026__18_53_07.png" alt="Logo">
+      <div>
+        <div class="brand-name">Altos del Roble</div>
+        <div class="brand-sub">Portal Cliente</div>
+      </div>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#inicio" class="nav-link active" data-section="inicio">
+          <ion-icon name="home-outline"></ion-icon> Inicio
+        </a></li>
+        <li><a href="#lotes" class="nav-link" data-section="lotes">
+          <ion-icon name="map-outline"></ion-icon> Lotes disponibles
+        </a></li>
+        <li><a href="#compras" class="nav-link" data-section="compras">
+          <ion-icon name="receipt-outline"></ion-icon> Mis compras
+        </a></li>
+        <li><a href="#pagos" class="nav-link" data-section="pagos">
+          <ion-icon name="card-outline"></ion-icon> Mis pagos
+        </a></li>
+        <li><a href="#proyecto" class="nav-link" data-section="proyecto">
+          <ion-icon name="information-circle-outline"></ion-icon> El Proyecto
+        </a></li>
+        <li><a href="#pqrs" class="nav-link" data-section="pqrs">
+          <ion-icon name="chatbox-outline"></ion-icon> PQRS
+        </a></li>
+        <li><a href="#perfil" class="nav-link" data-section="perfil">
+          <ion-icon name="person-outline"></ion-icon> Mi perfil
+        </a></li>
+      </ul>
+    </nav>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- INICIO -->
+    <section id="inicio" class="section active">
+      <p class="section-subtitle">Buenos días, bienvenido a su portal</p>
+      <h2 class="section-title">Panel Principal</h2>
+      <div class="dashboard-grid">
+        <div class="stat-card">
+          <div class="icon-wrap green">📦</div>
+          <h4>Compras activas</h4>
+          <div class="value" id="stat-compras">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="icon-wrap yellow">�</div>
+          <h4>Total invertido</h4>
+          <div class="value" id="stat-total-invertido" style="font-size:17px;">$0</div>
+        </div>
+        <div class="stat-card">
+          <div class="icon-wrap blue">✅</div>
+          <h4>Total pagado</h4>
+          <div class="value" id="stat-total-pagado" style="font-size:17px;">$0</div>
+        </div>
+        <div class="stat-card">
+          <div class="icon-wrap red">⚠️</div>
+          <h4>Saldo pendiente</h4>
+          <div class="value" id="stat-total-pendiente" style="font-size:17px;">$0</div>
+        </div>
+      </div>
+
+      <h3 style="font-family:'Playfair Display',serif;font-size:18px;color:var(--forest);margin-bottom:14px;">Acciones rápidas</h3>
+      <div class="quick-actions">
+        <a class="action-card nav-link" data-section="lotes">
+          <ion-icon name="map-outline"></ion-icon>
+          <span>Ver Lotes</span>
+        </a>
+        <a class="action-card nav-link" data-section="compras">
+          <ion-icon name="receipt-outline"></ion-icon>
+          <span>Mis Compras</span>
+        </a>
+        <a class="action-card nav-link" data-section="pagos">
+          <ion-icon name="card-outline"></ion-icon>
+          <span>Realizar Pago</span>
+        </a>
+        <a class="action-card nav-link" data-section="pqrs">
+          <ion-icon name="chatbox-outline"></ion-icon>
+          <span>Enviar PQRS</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- LOTES -->
+    <section id="lotes" class="section">
+      <p class="section-subtitle">Explore las opciones disponibles del proyecto</p>
+      <h2 class="section-title">Lotes Disponibles</h2>
+
+      <div style="margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <input type="text" id="lote-search" placeholder="🔍 Buscar lote..." style="padding:8px 12px;border:1px solid #ddd;border-radius:4px;width:200px;">
+        <input type="number" id="lote-filter-precio-min" placeholder="Precio mín" style="padding:8px 12px;border:1px solid #ddd;border-radius:4px;width:130px;">
+        <input type="number" id="lote-filter-precio-max" placeholder="Precio máx" style="padding:8px 12px;border:1px solid #ddd;border-radius:4px;width:130px;">
+        <input type="number" id="lote-filter-area" placeholder="Área (m²)" style="padding:8px 12px;border:1px solid #ddd;border-radius:4px;width:130px;">
+        <select id="lote-filter-habitaciones" style="padding:8px 12px;border:1px solid #ddd;border-radius:4px;width:130px;">
+          <option value="">Habitaciones</option>
+          <option value="2">2 hab</option>
+          <option value="3">3 hab</option>
+          <option value="4">4 hab</option>
+          <option value="5">5+ hab</option>
+        </select>
+        <button class="btn-sm" id="filter-limpiar">Limpiar</button>
+      </div>
+
+      <div class="lotes-grid" id="lotes-grid">
+        <!-- Lote 1 -->
+        <div class="lote-card" data-estado="Disponible">
+          <div class="lote-id">Lote · A-01</div>
+          <h4>Lote Etapa A</h4>
+          <div class="lote-info">
+            <span>📐 Área: <strong>120 m²</strong></span>
+            <span>📍 Etapa: <strong>Lanzamiento</strong></span>
+          </div>
+          <div class="lote-precio">$180.000.000</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="badge verde">Disponible</span>
+            <button class="btn-sm">Reservar</button>
+          </div>
+        </div>
+        <!-- Lote 2 -->
+        <div class="lote-card" data-estado="Disponible">
+          <div class="lote-id">Lote · A-02</div>
+          <h4>Lote Etapa A</h4>
+          <div class="lote-info">
+            <span>📐 Área: <strong>145 m²</strong></span>
+            <span>📍 Etapa: <strong>Lanzamiento</strong></span>
+          </div>
+          <div class="lote-precio">$218.000.000</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="badge verde">Disponible</span>
+            <button class="btn-sm">Reservar</button>
+          </div>
+        </div>
+        <!-- Lote 3 -->
+        <div class="lote-card" data-estado="Reservado">
+          <div class="lote-id">Lote · B-01</div>
+          <h4>Lote Etapa B</h4>
+          <div class="lote-info">
+            <span>📐 Área: <strong>200 m²</strong></span>
+            <span>📍 Etapa: <strong>Preventa</strong></span>
+          </div>
+          <div class="lote-precio">$310.000.000</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="badge amarillo">Reservado</span>
+            <button class="btn-sm outline" disabled style="opacity:0.5;cursor:not-allowed;">No disponible</button>
+          </div>
+        </div>
+        <!-- Lote 4 -->
+        <div class="lote-card" data-estado="Disponible">
+          <div class="lote-id">Lote · B-02</div>
+          <h4>Lote Etapa B</h4>
+          <div class="lote-info">
+            <span>📐 Área: <strong>180 m²</strong></span>
+            <span>📍 Etapa: <strong>Preventa</strong></span>
+          </div>
+          <div class="lote-precio">$270.000.000</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="badge verde">Disponible</span>
+            <button class="btn-sm">Reservar</button>
+          </div>
+        </div>
+        <!-- Lote 5 -->
+        <div class="lote-card" data-estado="Vendido">
+          <div class="lote-id">Lote · C-01</div>
+          <h4>Lote Etapa C</h4>
+          <div class="lote-info">
+            <span>📐 Área: <strong>160 m²</strong></span>
+            <span>📍 Etapa: <strong>Construcción</strong></span>
+          </div>
+          <div class="lote-precio">$240.000.000</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="badge rojo">Vendido</span>
+          </div>
+        </div>
+        <!-- Lote 6 -->
+        <div class="lote-card" data-estado="Disponible">
+          <div class="lote-id">Lote · C-02</div>
+          <h4>Lote Etapa C</h4>
+          <div class="lote-info">
+            <span>📐 Área: <strong>130 m²</strong></span>
+            <span>📍 Etapa: <strong>Construcción</strong></span>
+          </div>
+          <div class="lote-precio">$195.000.000</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="badge verde">Disponible</span>
+            <button class="btn-sm">Reservar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPRAS -->
+    <section id="compras" class="section">
+      <p class="section-subtitle">Detalle de sus adquisiciones en el proyecto</p>
+      <h2 class="section-title">Mis Compras</h2>
+
+      <div class="table-card" style="overflow-x: auto;">
+        <h3>Lotes adquiridos</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Imagen</th>
+              <th>Número</th>
+              <th>Descripción</th>
+              <th>Área (m²)</th>
+              <th>Habitaciones</th>
+              <th>Etapa</th>
+              <th>Valor total</th>
+              <th>Pagado</th>
+              <th>Saldo</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="compras-tbody">
+            <tr>
+              <td width="80"><img src="" alt="Lote" style="width:100%;height:60px;object-fit:cover;border-radius:4px;"></td>
+              <td><strong>A-01</strong></td>
+              <td>Descripción</td>
+              <td>120 m²</td>
+              <td>4</td>
+              <td>Lanzamiento</td>
+              <td>$180.000.000</td>
+              <td>$500.000</td>
+              <td>$179.500.000</td>
+              <td><span class="badge amarillo">Pendiente</span></td>
+              <td><button class="btn-sm">📄 Factura</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PAGOS -->
+    <section id="pagos" class="section">
+      <p class="section-subtitle">Historial y registro de sus pagos</p>
+      <h2 class="section-title">Mis Pagos</h2>
+
+      <div class="table-card" style="margin-bottom:28px;overflow-x:auto;">
+        <h3>Historial de pagos</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Fecha</th>
+              <th>Lote</th>
+              <th>Monto</th>
+              <th>Método</th>
+              <th>N° Comprobante</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="pagos-tbody">
+            <tr>
+              <td>001</td>
+              <td>15/02/2026</td>
+              <td>A-01</td>
+              <td>$500.000</td>
+              <td>Transferencia</td>
+              <td><code style="background:#f0f0f0;padding:4px 8px;border-radius:3px;font-size:12px;">CP-00001</code></td>
+              <td><button class="btn-sm outline" onclick="alert('Funcionalidad de descarga en desarrollo')">📄 PDF</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-card" style="max-width:500px;">
+        <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:var(--forest);margin-bottom:20px;">Registrar nuevo pago</h3>
+        <form id="payment-form">
+          <div class="form-group">
+            <label>Lote</label>
+            <select id="payment-compra-id" name="compra_id" required>
+              <option value="">Seleccione un lote</option>
+              <option value="A-01">Lote A-01 – Saldo: $179.500.000</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Monto a pagar</label>
+            <input type="number" id="payment-monto" name="monto" placeholder="0" min="0" required>
+          </div>
+          <div class="form-group">
+            <label>Método de pago</label>
+            <select id="payment-metodo" name="metodo" required>
+              <option value="">Seleccione método</option>
+              <option>Transferencia bancaria</option>
+              <option>Efectivo</option>
+              <option>Cheque</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary">Registrar pago</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- PROYECTO -->
+    <section id="proyecto" class="section">
+      <p class="section-subtitle">Información general del proyecto habitacional</p>
+      <h2 class="section-title">El Proyecto</h2>
+
+      <div class="table-card" style="margin-bottom:28px;max-width:700px;">
+        <h3>Altos del Roble</h3>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-top:8px;">
+          Altos del Roble es un proyecto de vivienda campestre ubicado en un entorno natural privilegiado. Combina la tranquilidad del campo con la comodidad de la vida moderna, ofreciendo lotes con servicios completos en un ambiente arbolado y seguro para toda la familia.
+        </p>
+      </div>
+
+      <h3 style="font-family:'Playfair Display',serif;font-size:18px;color:var(--forest);margin-bottom:4px;">Etapas del proyecto</h3>
+      <div class="project-stages">
+        <div class="stage-card">
+          <div class="stage-num">Etapa 1</div>
+          <h4>Lanzamiento</h4>
+          <p>Presentación oficial del proyecto e inicio de inscripciones con precio preferencial.</p>
+        </div>
+        <div class="stage-card">
+          <div class="stage-num">Etapa 2</div>
+          <h4>Preventa</h4>
+          <p>Venta anticipada de lotes con condiciones especiales antes del inicio de obras.</p>
+        </div>
+        <div class="stage-card">
+          <div class="stage-num">Etapa 3</div>
+          <h4>Construcción</h4>
+          <p>Ejecución de obras de urbanización, vías, redes y áreas comunes del proyecto.</p>
+        </div>
+        <div class="stage-card">
+          <div class="stage-num">Etapa 4</div>
+          <h4>Entrega</h4>
+          <p>Formalización de escrituras y entrega física de los lotes a sus propietarios.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PQRS -->
+    <section id="pqrs" class="section">
+      <p class="section-subtitle">Peticiones, Quejas, Reclamos y Sugerencias</p>
+      <h2 class="section-title">PQRS</h2>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+        <div class="form-card">
+          <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:var(--forest);margin-bottom:20px;">Nueva solicitud</h3>
+          <form id="pqrs-form">
+            <div class="form-group">
+              <label>Tipo de solicitud</label>
+              <select id="pqrs-tipo" name="tipo" required>
+                <option value="">Seleccione tipo</option>
+                <option value="Petición">Petición</option>
+                <option value="Queja">Queja</option>
+                <option value="Reclamo">Reclamo</option>
+                <option value="Sugerencia">Sugerencia</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Asunto</label>
+              <input type="text" id="pqrs-asunto" name="asunto" placeholder="Resumen breve del asunto" required>
+            </div>
+            <div class="form-group">
+              <label>Descripción</label>
+              <textarea id="pqrs-descripcion" name="descripcion" placeholder="Describa su solicitud con detalle..." required></textarea>
+            </div>
+            <button type="submit" class="btn-primary">Enviar solicitud</button>
+          </form>
+        </div>
+
+        <div class="table-card">
+          <h3>Mis solicitudes</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tipo</th>
+                <th>Asunto</th>
+                <th>Estado</th>
+                <th>Respuesta</th>
+              </tr>
+            </thead>
+            <tbody id="pqrs-tbody">
+              <tr>
+                <td><strong>#001</strong></td>
+                <td>Queja</td>
+                <td>Demora en respuesta</td>
+                <td>
+                  <div class="pqrs-status-row">
+                    <div class="dot amarillo"></div>
+                    En revisión
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>#002</strong></td>
+                <td>Sugerencia</td>
+                <td>Acceso al predio</td>
+                <td>
+                  <div class="pqrs-status-row">
+                    <div class="dot verde"></div>
+                    Resuelta
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PERFIL -->
+    <section id="perfil" class="section">
+      <p class="section-subtitle">Administre su información personal</p>
+      <h2 class="section-title">Mi Perfil</h2>
+
+      <div class="perfil-layout">
+        <div class="perfil-card">
+          <div class="perfil-avatar" id="perfil-avatar">C</div>
+          <div class="perfil-name" id="perfil-name">Cliente</div>
+          <div class="perfil-email" id="perfil-email">cliente@email.com</div>
+          <span class="badge azul">Cliente activo</span>
+        </div>
+
+        <div class="info-form">
+          <h3>Información personal</h3>
+          <form id="profile-form">
+            <div class="form-group">
+              <label>Nombre completo</label>
+              <input type="text" id="profile-nombre" placeholder="Nombre y Apellido">
+            </div>
+            <div class="form-group">
+              <label>Correo electrónico</label>
+              <input type="email" id="profile-email" placeholder="correo@ejemplo.com">
+            </div>
+            <div class="form-group" style="margin-top:20px;">
+              <button type="submit" class="btn-primary">Guardar cambios</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module" src="../../js/panel.js"></script>
+
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
