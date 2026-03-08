@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Administrativo – Altos del Roble</title>
+  <script type="module" crossorigin src="/assets/admin-pLj4vQe9.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="/assets/api-DRR1AW4h.js">
+  <link rel="stylesheet" crossorigin href="/assets/panel-Tbv7NVny.css">
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <div>
+        <div class="page-tag">Portal Administrativo</div>
+        <h1>Altos del Roble</h1>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="user-chip">
+        <div class="avatar" id="admin-avatar">A</div>
+        <span id="admin-name">Administrador</span>
+      </div>
+      <button class="logout-btn" id="logout-btn">
+        <ion-icon name="log-out-outline"></ion-icon>
+        Salir
+      </button>
+    </div>
+  </header>
+
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <img src="../panel/ChatGPT_Image_27_feb_2026__18_53_07.png" alt="Logo">
+      <div>
+        <div class="brand-name">Altos del Roble</div>
+        <div class="brand-sub">Panel Admin</div>
+      </div>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#inicio" class="nav-link active" data-section="inicio"><ion-icon name="speedometer-outline"></ion-icon> Resumen</a></li>
+        <li><a href="#lotes" class="nav-link" data-section="lotes"><ion-icon name="map-outline"></ion-icon> Gestión de lotes</a></li>
+        <li><a href="#planos" class="nav-link" data-section="planos"><ion-icon name="images-outline"></ion-icon> Planos</a></li>
+        <li><a href="#compras" class="nav-link" data-section="compras"><ion-icon name="receipt-outline"></ion-icon> Compras</a></li>
+        <li><a href="#pqrs" class="nav-link" data-section="pqrs"><ion-icon name="chatbox-ellipses-outline"></ion-icon> PQRS</a></li>
+      </ul>
+    </nav>
+  </nav>
+
+  <main>
+    <section id="inicio" class="section active">
+      <p class="section-subtitle">Vista general del proyecto</p>
+      <h2 class="section-title">Resumen Administrativo</h2>
+      <div class="dashboard-grid">
+        <div class="stat-card">
+          <div class="icon-wrap green">📦</div>
+          <h4>Total lotes</h4>
+          <div class="value" id="admin-stat-lotes">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="icon-wrap blue">✅</div>
+          <h4>Lotes disponibles</h4>
+          <div class="value" id="admin-stat-lotes-disponibles">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="icon-wrap yellow">💳</div>
+          <h4>Total compras</h4>
+          <div class="value" id="admin-stat-compras">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="icon-wrap red">📨</div>
+          <h4>PQRS pendientes</h4>
+          <div class="value" id="admin-stat-pqrs-pendientes">0</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="lotes" class="section">
+      <p class="section-subtitle">Crear y monitorear lotes</p>
+      <h2 class="section-title">Gestión de Lotes</h2>
+
+      <div class="perfil-layout" style="grid-template-columns: 1fr 1fr;">
+        <div class="info-form">
+          <h3>Crear nuevo lote</h3>
+          <form id="admin-lote-form">
+            <div class="form-group">
+              <label>Número de lote</label>
+              <input type="text" id="lote-numero" name="numero_lote" placeholder="Ej: D-12" required>
+            </div>
+            <div class="form-group">
+              <label>Área (m²)</label>
+              <input type="number" id="lote-area" name="area_m2" min="1" required>
+            </div>
+            <div class="form-group">
+              <label>Precio</label>
+              <input type="number" id="lote-precio" name="precio" min="1" required>
+            </div>
+            <div class="form-group">
+              <label>Etapa</label>
+              <input type="number" id="lote-etapa" name="etapa_id" min="1" placeholder="Opcional">
+            </div>
+            <div class="form-group">
+              <label>Habitaciones</label>
+              <input type="number" id="lote-habitaciones" name="habitaciones" min="0" placeholder="Opcional">
+            </div>
+            <div class="form-group">
+              <label>Baños</label>
+              <input type="number" id="lote-banos" name="banos" min="0" placeholder="Opcional">
+            </div>
+            <div class="form-group">
+              <label>Descripción</label>
+              <textarea id="lote-descripcion" name="descripcion" rows="3" placeholder="Descripción del lote"></textarea>
+            </div>
+            <div class="form-group">
+              <label>URL imagen</label>
+              <input type="url" id="lote-image-url" name="image_url" placeholder="https://...">
+            </div>
+            <div class="form-group" style="margin-top:20px;">
+              <button type="submit" class="btn-primary">Crear lote</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="table-card" style="overflow-x:auto;">
+          <h3>Últimos lotes</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Número</th>
+                <th>Área</th>
+                <th>Precio</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="admin-lotes-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="planos" class="section">
+      <p class="section-subtitle">Administrar planos de lotes</p>
+      <h2 class="section-title">Gestión de Planos</h2>
+
+      <div class="perfil-layout" style="grid-template-columns: 1fr 1fr;">
+        <div class="info-form">
+          <h3>Crear nuevo plano</h3>
+          <form id="admin-plano-form">
+            <div class="form-group">
+              <label>Lote ID</label>
+              <input type="number" id="plano-lote-id" name="lote_id" min="1" placeholder="ID del lote" required>
+              <small style="color:#666;">Ingresa el ID del lote para asociar el plano</small>
+            </div>
+            <div class="form-group">
+              <label>Nombre del plano</label>
+              <input type="text" id="plano-nombre" name="nombre" placeholder="Ej: Plano Vista Mar 180m²" required>
+            </div>
+            <div class="form-group">
+              <label>URL de imagen</label>
+              <input type="url" id="plano-image-url" name="image_url" placeholder="https://..." required>
+            </div>
+            <div class="form-group">
+              <label>Descripción</label>
+              <textarea id="plano-descripcion" name="descripcion" rows="3" placeholder="Descripción del plano"></textarea>
+            </div>
+            <div class="form-group" style="margin-top:20px;">
+              <button type="submit" class="btn-primary">Crear plano</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="table-card" style="overflow-x:auto;">
+          <h3>Todos los planos</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Lote</th>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-planos-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="compras" class="section">
+      <p class="section-subtitle">Historial global de ventas</p>
+      <h2 class="section-title">Compras Registradas</h2>
+      <div class="table-card" style="overflow-x:auto;">
+        <h3>Compras por cliente</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Fecha</th>
+              <th>Cliente</th>
+              <th>Correo</th>
+              <th>Lote</th>
+              <th>Área</th>
+              <th>Total</th>
+              <th>Saldo</th>
+            </tr>
+          </thead>
+          <tbody id="admin-compras-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="pqrs" class="section">
+      <p class="section-subtitle">Atención a solicitudes de clientes</p>
+      <h2 class="section-title">PQRS</h2>
+      <div class="table-card" style="overflow-x:auto;">
+        <h3>Solicitudes recibidas</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Tipo</th>
+              <th>Asunto</th>
+              <th>Descripción</th>
+              <th>Estado</th>
+              <th>Respuesta</th>
+            </tr>
+          </thead>
+          <tbody id="admin-pqrs-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
