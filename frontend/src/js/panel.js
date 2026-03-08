@@ -5,6 +5,7 @@
 import { api, requireAuth, logout } from "./api.js";
 
 let comprasCache = [];
+let selectedPlanoId = null;
 
 function formatCurrency(value) {
   const amount = Number(value || 0);
@@ -210,27 +211,190 @@ function attachReserveEvents() {
       const loteId = Number(button.dataset.loteId);
       if (!loteId) return;
 
-      button.disabled = true;
-      const originalText = button.textContent;
-      button.textContent = "Reservando...";
-
-      try {
-        await api.createCompra(loteId, 0);
-        alert("Compra creada exitosamente.");
-        await Promise.all([
-          loadDashboard(),
-          loadLotes(),
-          loadCompras(),
-          loadPagos(),
-        ]);
-      } catch (error) {
-        alert(error.message || "No fue posible reservar el lote.");
-      } finally {
-        button.disabled = false;
-        button.textContent = originalText;
+      // Buscar el lote en el cache
+      const lote = allLotes.find((l) => l.id === loteId);
+      if (!lote) {
+        alert("Error: Lote no encontrado");
+        return;
       }
+
+      // Abrir modal de plan de cuotas
+      openModalPlanCuotas(lote);
     });
   });
+}
+
+// Calcular cuota con interés (sistema francés)
+function calcularCuotaConInteres(saldoFinanciado, tasaInteres, numeroCuotas) {
+  if (numeroCuotas === 1) return saldoFinanciado;
+
+  const i = tasaInteres;
+  const n = numeroCuotas;
+  const cuota =
+    (saldoFinanciado * (i * Math.pow(1 + i, n))) / (Math.pow(1 + i, n) - 1);
+
+  return Math.round(cuota);
+}
+
+async function cargarPlanos(loteId) {
+  const planosGallery = document.getElementById("planos-gallery");
+  if (!planosGallery) return;
+
+  planosGallery.innerHTML =
+    "<p style='grid-column: 1 / -1; color: #777; font-size: 13px;'>Cargando planos...</p>";
+  selectedPlanoId = null;
+
+  try {
+    const response = await api.getPlanosLote(loteId);
+    const planos = response?.planos || [];
+
+    if (planos.length === 0) {
+      planosGallery.innerHTML =
+        "<p style='grid-column: 1 / -1; color: #777; font-size: 13px;'>No hay planos disponibles para este lote.</p>";
+      return;
+    }
+
+    planosGallery.innerHTML = "";
+
+    planos.forEach((plano, index) => {
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "plano-card";
+      card.innerHTML = `
+        <img class="plano-image" src="${plano.image_url}" alt="${plano.nombre}" />
+        <div class="plano-info">
+          <p class="plano-name">${plano.nombre}</p>
+          <p class="plano-desc">${plano.descripcion || ""}</p>
+        </div>
+      `;
+
+      card.addEventListener("click", () => {
+        document
+          .querySelectorAll("#planos-gallery .plano-card")
+          .forEach((el) => el.classList.remove("selected"));
+        card.classList.add("selected");
+        selectedPlanoId = plano.id;
+      });
+
+      planosGallery.appendChild(card);
+
+      if (index === 0) {
+        card.classList.add("selected");
+        selectedPlanoId = plano.id;
+      }
+    });
+  } catch (error) {
+    console.error("Error al cargar planos:", error);
+    planosGallery.innerHTML =
+      "<p style='grid-column: 1 / -1; color: #b30000; font-size: 13px;'>No fue posible cargar los planos.</p>";
+  }
+}
+
+// Abrir modal con plan de cuotas
+function openModalPlanCuotas(lote) {
+  const modal = document.getElementById("modal-compra-cuotas");
+  const precio = Number(lote.precio);
+  // Cargar planos para este lote
+  cargarPlanos(lote.id);
+
+  // Llenar información del lote
+  document.getElementById("modal-lote-nombre").textContent =
+    `Lote ${lote.numero_lote}`;
+  document.getElementById("modal-lote-precio").textContent =
+    `$${precio.toLocaleString("es-CO")}`;
+
+  // Función para actualizar preview
+  const actualizarPreview = () => {
+    const porcentajeEnganche = Number(
+      document.getElementById("porcentaje-enganche").value,
+    );
+    const numeroCuotas = Number(document.getElementById("numero-cuotas").value);
+    const tasaInteres = 0.01; // 1% mensual
+
+    const valorEnganche = Math.round(precio * (porcentajeEnganche / 100));
+    const saldoFinanciar = precio - valorEnganche;
+    const cuotaMensual =
+      numeroCuotas > 1
+        ? calcularCuotaConInteres(saldoFinanciar, tasaInteres, numeroCuotas)
+        : 0;
+
+    // Actualizar preview
+    document.getElementById("preview-valor-lote").textContent =
+      `$${precio.toLocaleString("es-CO")}`;
+    document.getElementById("preview-enganche").textContent =
+      `$${valorEnganche.toLocaleString("es-CO")} (${porcentajeEnganche}%)`;
+    document.getElementById("preview-saldo-financiar").textContent =
+      `$${saldoFinanciar.toLocaleString("es-CO")}`;
+
+    if (numeroCuotas === 1) {
+      document.getElementById("preview-cuota-mensual").textContent =
+        "Pago único";
+      document.getElementById("preview-tasa").textContent = "Sin interés";
+    } else {
+      document.getElementById("preview-cuota-mensual").textContent =
+        `$${cuotaMensual.toLocaleString("es-CO")}`;
+      document.getElementById("preview-tasa").textContent =
+        `1% mensual (${numeroCuotas} cuotas)`;
+    }
+  };
+
+  // Event listeners para actualizar preview
+  document.getElementById("porcentaje-enganche").onchange = actualizarPreview;
+  document.getElementById("numero-cuotas").onchange = actualizarPreview;
+
+  // Actualizar preview inicial
+  actualizarPreview();
+
+  // Manejar confirmación
+  const btnConfirmar = document.getElementById("btn-confirmar-compra");
+  const newBtnConfirmar = btnConfirmar.cloneNode(true); // Remover listeners previos
+  btnConfirmar.parentNode.replaceChild(newBtnConfirmar, btnConfirmar);
+
+  newBtnConfirmar.addEventListener("click", async () => {
+    const porcentajeEnganche = Number(
+      document.getElementById("porcentaje-enganche").value,
+    );
+    const numeroCuotas = Number(document.getElementById("numero-cuotas").value);
+    const valorEnganche = Math.round(precio * (porcentajeEnganche / 100));
+
+    if (!selectedPlanoId) {
+      alert("Debes seleccionar un plano antes de confirmar la compra.");
+      return;
+    }
+
+    newBtnConfirmar.disabled = true;
+    newBtnConfirmar.textContent = "Procesando...";
+
+    try {
+      await api.createCompra(
+        lote.id,
+        valorEnganche,
+        porcentajeEnganche,
+        numeroCuotas,
+        selectedPlanoId,
+      );
+      modal.style.display = "none";
+      alert(
+        "¡Compra creada exitosamente! Revisa la sección 'Mis Compras' para ver tu plan de cuotas.",
+      );
+
+      // Recargar datos
+      await Promise.all([
+        loadDashboard(),
+        loadLotes(),
+        loadCompras(),
+        loadPagos(),
+      ]);
+    } catch (error) {
+      alert(error.message || "No fue posible completar la compra.");
+    } finally {
+      newBtnConfirmar.disabled = false;
+      newBtnConfirmar.textContent = "Confirmar Compra";
+    }
+  });
+
+  // Mostrar modal
+  modal.style.display = "flex";
 }
 
 let allLotes = []; // Cache de todos los lotes
@@ -377,11 +541,29 @@ async function loadCompras() {
         const imageUrl =
           compra.image_url ||
           "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ddd' width='100' height='100'/%3E%3C/svg%3E";
+
+        const tieneCuotas = Number(compra.numero_cuotas || 1) > 1;
+        const btnCuotas = tieneCuotas
+          ? `<button class="btn-sm" onclick="window.verCuotasCompra(${compra.id})" style="background: var(--forest); color: white;">📅 Ver Cuotas (${compra.cuotas_pagadas || 0}/${compra.numero_cuotas})</button>`
+          : "";
+        const planoInfo = compra.plano_nombre
+          ? `<div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+               <img
+                 src="${compra.plano_image_url || imageUrl}"
+                 alt="${compra.plano_nombre}"
+                 style="width:32px;height:32px;object-fit:cover;border-radius:6px;border:1px solid #e5e5e5;"
+               />
+               <div style="font-size:12px;color:var(--muted);line-height:1.2;">
+                 Plano elegido:<br><strong style="color:var(--forest);">${compra.plano_nombre}</strong>
+               </div>
+             </div>`
+          : "";
+
         return `
           <tr>
             <td width="80"><img src="${imageUrl}" alt="Lote" style="width:100%;height:60px;object-fit:cover;border-radius:4px;"></td>
             <td><strong>${compra.numero_lote || "—"}</strong></td>
-            <td>${compra.descripcion || "—"}</td>
+            <td>${compra.descripcion || "—"}${planoInfo}</td>
             <td>${Number(compra.area_m2 || 0)} m²</td>
             <td>${compra.habitaciones || "—"}</td>
             <td>${compra.etapa_id ? `Etapa ${compra.etapa_id}` : "—"}</td>
@@ -389,7 +571,12 @@ async function loadCompras() {
             <td>${formatCurrency(pagado)}</td>
             <td>${formatCurrency(compra.saldo_pendiente)}</td>
             <td><span class="badge ${estadoClass(estado)}">${estadoLabel(estado)}</span></td>
-            <td><button class="btn-sm" onclick="window.descargarFactura(${compra.id})">📄 Factura</button></td>
+            <td>
+              <div style="display: flex; gap: 5px; flex-direction: column;">
+                <button class="btn-sm" onclick="window.descargarFactura(${compra.id})">📄 Factura</button>
+                ${btnCuotas}
+              </div>
+            </td>
           </tr>
         `;
       })
@@ -400,6 +587,107 @@ async function loadCompras() {
     showAlert("Error al cargar tus compras", "error");
   }
 }
+
+// Ver cuotas de una compra
+async function verCuotasCompra(compraId) {
+  try {
+    showLoader("Cargando calendario de cuotas...");
+    const response = await api.getCuotasCompra(compraId);
+    const cuotas = response?.cuotas || [];
+    hideLoader();
+
+    if (cuotas.length === 0) {
+      alert("Esta compra no tiene cuotas registradas.");
+      return;
+    }
+
+    // Crear modal con el calendario
+    const modal = document.createElement("div");
+    modal.className = "modal";
+    modal.style.display = "flex";
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width: 900px;">
+        <span class="close-modal" onclick="this.parentElement.parentElement.remove()">&times;</span>
+        <h2 style="color: var(--forest); margin-bottom: 20px;">Calendario de Cuotas - Compra #${compraId}</h2>
+        
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div>
+              <span style="font-size: 12px; color: #666;">Total cuotas</span>
+              <p style="margin: 5px 0; font-size: 20px; font-weight: bold; color: var(--forest);">${cuotas.length}</p>
+            </div>
+            <div>
+              <span style="font-size: 12px; color: #666;">Cuotas pagadas</span>
+              <p style="margin: 5px 0; font-size: 20px; font-weight: bold; color: #28a745;">${cuotas.filter((c) => c.estado === "pagado").length}</p>
+            </div>
+            <div>
+              <span style="font-size: 12px; color: #666;">Cuotas pendientes</span>
+              <p style="margin: 5px 0; font-size: 20px; font-weight: bold; color: #ffc107;">${cuotas.filter((c) => c.estado === "pendiente").length}</p>
+            </div>
+            <div>
+              <span style="font-size: 12px; color: #666;">Cuotas vencidas</span>
+              <p style="margin: 5px 0; font-size: 20px; font-weight: bold; color: #dc3545;">${cuotas.filter((c) => c.estado === "vencido").length}</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="cuotas-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Cuota</th>
+                <th>Capital</th>
+                <th>Interés</th>
+                <th>Saldo Restante</th>
+                <th>Vencimiento</th>
+                <th>Pagado</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${cuotas
+                .map(
+                  (cuota) => `
+                <tr>
+                  <td>${cuota.numero_cuota}</td>
+                  <td><strong>${formatCurrency(cuota.valor_cuota)}</strong></td>
+                  <td>${formatCurrency(cuota.monto_capital)}</td>
+                  <td>${formatCurrency(cuota.monto_interes)}</td>
+                  <td>${formatCurrency(cuota.saldo_restante)}</td>
+                  <td>${new Date(cuota.fecha_vencimiento).toLocaleDateString("es-CO")}</td>
+                  <td>${cuota.monto_pagado > 0 ? formatCurrency(cuota.monto_pagado) : "—"}</td>
+                  <td>
+                    <span class="estado-cuota ${cuota.estado}">
+                      ${cuota.estado}
+                    </span>
+                  </td>
+                </tr>
+              `,
+                )
+                .join("")}
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 20px; text-align: right;">
+          <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                  style="padding: 10px 20px; background: #ccc; border: none; border-radius: 8px; cursor: pointer;">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+  } catch (error) {
+    hideLoader();
+    alert("Error al cargar las cuotas: " + error.message);
+  }
+}
+
+// Hacer función accesible globalmente
+window.verCuotasCompra = verCuotasCompra;
 
 async function downloadComprobantePDF(pagoId) {
   try {

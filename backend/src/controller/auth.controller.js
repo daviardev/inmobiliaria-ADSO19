@@ -7,7 +7,7 @@ const nodemailer = require("nodemailer");
 // Configurar email
 const transporter = nodemailer.createTransport({
   // eslint-disable-next-line no-undef
-  service: process.env.EMAIL_SERVICE || "gmail",
+  service: process.env.EMAIL_SERVICE,
   auth: {
     // eslint-disable-next-line no-undef
     user: process.env.EMAIL_USER,
@@ -188,7 +188,7 @@ const recoverPassword = (req, res) => {
             user: process.env.EMAIL_USER
               ? "✓ Configurado"
               : "✗ Falta EMAIL_USER",
-              // eslint-disable-next-line no-undef
+            // eslint-disable-next-line no-undef
             password: process.env.EMAIL_PASSWORD
               ? "✓ Configurado"
               : "✗ Falta EMAIL_PASSWORD",
@@ -233,7 +233,8 @@ const resetPassword = async (req, res) => {
     });
   } catch (err) {
     return res.status(400).json({
-      message: "Token inválido o expirado", err
+      message: "Token inválido o expirado",
+      err,
     });
   }
 };

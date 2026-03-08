@@ -1,6 +1,69 @@
 const db = require("../config/db.js");
 const PDFDocument = require("pdfkit");
 
+const calcularCuotaFija = (saldoFinanciado, tasaInteres, numeroCuotas) => {
+  if (numeroCuotas === 1) return saldoFinanciado;
+
+  const i = tasaInteres;
+  const n = numeroCuotas;
+  const cuota =
+    (saldoFinanciado * (i * Math.pow(1 + i, n))) / (Math.pow(1 + i, n) - 1);
+
+  return Math.round(cuota);
+};
+
+const generarCalendarioCuotas = (
+  compraId,
+  saldoFinanciado,
+  tasaInteres,
+  numeroCuotas,
+  fechaInicio,
+  callback
+) => {
+  if (numeroCuotas === 1) {
+    return callback(null);
+  }
+
+  const cuotaFija = calcularCuotaFija(
+    saldoFinanciado,
+    tasaInteres,
+    numeroCuotas
+  );
+  let saldoRestante = saldoFinanciado;
+  const cuotas = [];
+
+  for (let i = 1; i <= numeroCuotas; i++) {
+    const montoInteres = Math.round(saldoRestante * tasaInteres);
+    const montoCapital = cuotaFija - montoInteres;
+    saldoRestante -= montoCapital;
+
+    if (i === numeroCuotas) {
+      saldoRestante = 0;
+    }
+
+    const fechaVencimiento = new Date(fechaInicio);
+    fechaVencimiento.setMonth(fechaVencimiento.getMonth() + i);
+
+    cuotas.push([
+      compraId,
+      i,
+      cuotaFija,
+      montoCapital,
+      montoInteres,
+      saldoRestante,
+      fechaVencimiento.toISOString().split("T")[0],
+    ]);
+  }
+
+  const insertQuery = `
+    INSERT INTO cuotas
+    (compra_id, numero_cuota, valor_cuota, monto_capital, monto_interes, saldo_restante, fecha_vencimiento)
+    VALUES ?
+  `;
+
+  db.query(insertQuery, [cuotas], callback);
+};
+
 const descargarFactura = (req, res) => {
   const usuarioId = req.user.id;
   const compraId = req.params.compra_id;
@@ -24,10 +87,13 @@ const descargarFactura = (req, res) => {
       l.habitaciones,
       l.banos,
       l.etapa_id,
-      l.precio
+      l.precio,
+      lp.nombre as plano_nombre,
+      lp.image_url as plano_image_url
     FROM compra c
     INNER JOIN usuarios u ON c.usuario_id = u.id
     INNER JOIN lotes l ON c.lote_id = l.id
+    LEFT JOIN lote_planos lp ON c.plano_id = lp.id
     WHERE c.id = ? AND c.usuario_id = ?
   `;
 
@@ -50,7 +116,7 @@ const descargarFactura = (req, res) => {
     // Obtener el total pagado
     const pagoQuery = `SELECT SUM(monto) as total_pagado FROM pagos WHERE compra_id = ?`;
 
-    db.query(pagoQuery, [compraId], (err, pagoResults) => {
+    db.query(pagoQuery, [compraId], async (err, pagoResults) => {
       if (err) {
         console.error("[FACTURA] Error obteniendo pagos:", err);
         return res.status(500).json({ message: "Error al generar factura" });
@@ -60,6 +126,22 @@ const descargarFactura = (req, res) => {
       console.log("[FACTURA] Total pagado:", totalPagado);
 
       try {
+        let planoImageBuffer = null;
+        if (compra.plano_image_url) {
+          try {
+            const imageResponse = await fetch(compra.plano_image_url);
+            if (imageResponse.ok) {
+              const arrayBuffer = await imageResponse.arrayBuffer();
+              planoImageBuffer = Buffer.from(arrayBuffer);
+            }
+          } catch (imageError) {
+            console.warn(
+              "[FACTURA] No se pudo descargar imagen del plano:",
+              imageError.message
+            );
+          }
+        }
+
         // Crear el PDF
         const doc = new PDFDocument();
 
@@ -94,9 +176,24 @@ const descargarFactura = (req, res) => {
         doc.text(`Área: ${compra.area_m2} m²`);
         doc.text(`Habitaciones: ${compra.habitaciones || "N/A"}`);
         doc.text(`Baños: ${compra.banos || "N/A"}`);
+        doc.text(`Plano elegido: ${compra.plano_nombre || "No especificado"}`);
         doc.text(
           `Etapa: ${compra.etapa_id ? `Etapa ${compra.etapa_id}` : "General"}`
         );
+
+        if (planoImageBuffer) {
+          doc.moveDown();
+          doc
+            .fontSize(11)
+            .font("Helvetica-Bold")
+            .text("Vista referencial del plano");
+          doc.moveDown(0.5);
+          doc.image(planoImageBuffer, {
+            fit: [220, 140],
+            align: "left",
+          });
+        }
+
         doc.moveDown();
 
         // Resumen financiero
@@ -153,11 +250,41 @@ const descargarFactura = (req, res) => {
 
 const crearCompra = (req, res) => {
   const usuarioId = req.user.id;
-  const { lote_id, valor_inicial } = req.body;
+  const {
+    lote_id,
+    valor_inicial,
+    porcentaje_enganche = 0,
+    numero_cuotas = 1,
+    plano_id = null,
+  } = req.body;
 
-  // Validaciones básicas
   if (!lote_id) {
     return res.status(400).json({ error: "lote_id es requerido" });
+  }
+
+  if (!plano_id) {
+    return res.status(400).json({
+      error: "plano_id es requerido. Debes seleccionar un plano",
+    });
+  }
+
+  if (!Number.isInteger(Number(plano_id)) || Number(plano_id) <= 0) {
+    return res.status(400).json({ error: "plano_id inválido" });
+  }
+
+  const ENGANCHES_VALIDOS = [0, 10, 20, 30];
+  const CUOTAS_VALIDAS = [1, 12, 24, 36, 60];
+
+  if (!ENGANCHES_VALIDOS.includes(Number(porcentaje_enganche))) {
+    return res.status(400).json({
+      error: "Porcentaje de enganche inválido. Opciones: 0%, 10%, 20%, 30%",
+    });
+  }
+
+  if (!CUOTAS_VALIDAS.includes(Number(numero_cuotas))) {
+    return res.status(400).json({
+      error: "Número de cuotas inválido. Opciones: 1, 12, 24, 36, 60",
+    });
   }
 
   const pagoInicial = valor_inicial ? Number(valor_inicial) : 0;
@@ -168,7 +295,6 @@ const crearCompra = (req, res) => {
       .json({ error: "El valor inicial no puede ser negativo" });
   }
 
-  // Verificar que el lote existe y está disponible
   const checkLote = `SELECT * FROM lotes WHERE id = ? AND estado = 'disponible'`;
 
   db.query(checkLote, [lote_id], (err, results) => {
@@ -183,6 +309,16 @@ const crearCompra = (req, res) => {
 
     const lote = results[0];
     const precio = Number(lote.precio);
+    const valorEnganche = Math.round(
+      precio * (Number(porcentaje_enganche) / 100)
+    );
+    const saldoFinanciado = precio - valorEnganche;
+
+    if (porcentaje_enganche > 0 && pagoInicial < valorEnganche) {
+      return res.status(400).json({
+        error: `El pago inicial debe ser al menos ${valorEnganche.toLocaleString("es-CO")} (${porcentaje_enganche}% de enganche)`,
+      });
+    }
 
     if (pagoInicial > precio) {
       return res.status(400).json({
@@ -190,74 +326,130 @@ const crearCompra = (req, res) => {
       });
     }
 
-    const saldoPendiente = precio - pagoInicial;
+    const continuarConCompra = () => {
+      const saldoPendiente = precio - pagoInicial;
+      const tasaInteres = 0.01;
+      const valorCuota =
+        numero_cuotas > 1
+          ? calcularCuotaFija(saldoFinanciado, tasaInteres, numero_cuotas)
+          : 0;
+      const fechaInicioPlan = new Date().toISOString().split("T")[0];
 
-    // Iniciar transacción
-    db.beginTransaction((err) => {
-      if (err) {
-        console.error("Error al iniciar transacción:", err);
-        return res.status(500).json({ error: "Error al procesar la compra" });
-      }
+      db.beginTransaction((trxErr) => {
+        if (trxErr) {
+          console.error("Error al iniciar transacción:", trxErr);
+          return res.status(500).json({ error: "Error al procesar la compra" });
+        }
 
-      // 1. Crear la compra
-      const insertCompra = `
-        INSERT INTO compra (fecha_compra, valor_total, saldo_pendiente, usuario_id, lote_id)
-        VALUES (CURRENT_DATE(), ?, ?, ?, ?)
-      `;
+        const insertCompra = `
+          INSERT INTO compra (
+            fecha_compra, valor_total, saldo_pendiente, usuario_id, lote_id,
+            porcentaje_enganche, valor_enganche, saldo_financiado,
+            numero_cuotas, valor_cuota, tasa_interes, fecha_inicio_plan, plano_id
+          )
+          VALUES (CURRENT_DATE(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
 
-      db.query(
-        insertCompra,
-        [precio, saldoPendiente, usuarioId, lote_id],
-        (err, results) => {
-          if (err) {
-            return db.rollback(() => {
-              console.error("Error al crear compra:", err);
-              res.status(500).json({
-                error: "Error al crear la compra",
-                details: err.message,
-              });
-            });
-          }
-
-          const compraId = results.insertId;
-
-          // 2. Actualizar el lote (estado y usuario_id)
-          const updateLote = `UPDATE lotes SET estado = 'reservado', usuario_id = ? WHERE id = ?`;
-
-          db.query(updateLote, [usuarioId, lote_id], (err) => {
-            if (err) {
+        db.query(
+          insertCompra,
+          [
+            precio,
+            saldoPendiente,
+            usuarioId,
+            lote_id,
+            porcentaje_enganche,
+            valorEnganche,
+            saldoFinanciado,
+            numero_cuotas,
+            valorCuota,
+            tasaInteres,
+            fechaInicioPlan,
+            plano_id,
+          ],
+          (insertErr, insertResults) => {
+            if (insertErr) {
               return db.rollback(() => {
-                console.error("Error al actualizar lote:", err);
+                console.error("Error al crear compra:", insertErr);
                 res.status(500).json({
-                  error: "Error al actualizar el lote",
-                  details: err.message,
+                  error: "Error al crear la compra",
+                  details: insertErr.message,
                 });
               });
             }
 
-            // 3. Si hay pago inicial, registrarlo
-            if (pagoInicial > 0) {
-              const insertPago = `
-              INSERT INTO pagos (monto, fecha_pago, comprobante, compra_id)
-              VALUES (?, CURRENT_DATE(), 'Pago inicial', ?)
-            `;
+            const compraId = insertResults.insertId;
+            const updateLote =
+              "UPDATE lotes SET estado = 'reservado', usuario_id = ? WHERE id = ?";
 
-              db.query(insertPago, [pagoInicial, compraId], (err) => {
-                if (err) {
-                  return db.rollback(() => {
-                    console.error("Error al registrar pago inicial:", err);
-                    res.status(500).json({
-                      error: "Error al registrar pago inicial",
-                      details: err.message,
-                    });
+            db.query(updateLote, [usuarioId, lote_id], (updateErr) => {
+              if (updateErr) {
+                return db.rollback(() => {
+                  console.error("Error al actualizar lote:", updateErr);
+                  res.status(500).json({
+                    error: "Error al actualizar el lote",
+                    details: updateErr.message,
                   });
+                });
+              }
+
+              const continuarPostPago = () => {
+                if (numero_cuotas > 1) {
+                  return generarCalendarioCuotas(
+                    compraId,
+                    saldoFinanciado,
+                    tasaInteres,
+                    numero_cuotas,
+                    fechaInicioPlan,
+                    (cuotasErr) => {
+                      if (cuotasErr) {
+                        return db.rollback(() => {
+                          console.error("Error al generar cuotas:", cuotasErr);
+                          res.status(500).json({
+                            error: "Error al generar calendario de cuotas",
+                            details: cuotasErr.message,
+                          });
+                        });
+                      }
+
+                      db.commit((commitErr) => {
+                        if (commitErr) {
+                          return db.rollback(() => {
+                            console.error(
+                              "Error al confirmar transacción:",
+                              commitErr
+                            );
+                            res
+                              .status(500)
+                              .json({ error: "Error al confirmar la compra" });
+                          });
+                        }
+
+                        res.status(201).json({
+                          message:
+                            "Compra creada exitosamente con plan de cuotas",
+                          compra_id: compraId,
+                          valor_total: precio,
+                          pago_inicial: pagoInicial,
+                          saldo_pendiente: saldoPendiente,
+                          plan_cuotas: {
+                            numero_cuotas,
+                            valor_cuota: valorCuota,
+                            tasa_interes: tasaInteres,
+                            porcentaje_enganche,
+                          },
+                        });
+                      });
+                    }
+                  );
                 }
 
-                // Commit de la transacción
-                db.commit((err) => {
-                  if (err) {
+                db.commit((commitErr) => {
+                  if (commitErr) {
                     return db.rollback(() => {
-                      console.error("Error al confirmar transacción:", err);
+                      console.error(
+                        "Error al confirmar transacción:",
+                        commitErr
+                      );
                       res
                         .status(500)
                         .json({ error: "Error al confirmar la compra" });
@@ -272,32 +464,70 @@ const crearCompra = (req, res) => {
                     saldo_pendiente: saldoPendiente,
                   });
                 });
-              });
-            } else {
-              // No hay pago inicial, solo commit
-              db.commit((err) => {
-                if (err) {
-                  return db.rollback(() => {
-                    console.error("Error al confirmar transacción:", err);
-                    res
-                      .status(500)
-                      .json({ error: "Error al confirmar la compra" });
-                  });
-                }
+              };
 
-                res.status(201).json({
-                  message: "Compra creada exitosamente",
-                  compra_id: compraId,
-                  valor_total: precio,
-                  pago_inicial: 0,
-                  saldo_pendiente: precio,
-                });
-              });
-            }
-          });
+              if (pagoInicial > 0) {
+                const tipoPago = valorEnganche > 0 ? "enganche" : "cuota";
+                const insertPago = `
+                  INSERT INTO pagos (monto, fecha_pago, comprobante, compra_id, tipo_pago)
+                  VALUES (?, CURRENT_DATE(), 'Pago inicial', ?, ?)
+                `;
+
+                return db.query(
+                  insertPago,
+                  [pagoInicial, compraId, tipoPago],
+                  (pagoErr) => {
+                    if (pagoErr) {
+                      return db.rollback(() => {
+                        console.error(
+                          "Error al registrar pago inicial:",
+                          pagoErr
+                        );
+                        res.status(500).json({
+                          error: "Error al registrar pago inicial",
+                          details: pagoErr.message,
+                        });
+                      });
+                    }
+
+                    continuarPostPago();
+                  }
+                );
+              }
+
+              continuarPostPago();
+            });
+          }
+        );
+      });
+    };
+
+    if (plano_id) {
+      const checkPlano =
+        "SELECT id FROM lote_planos WHERE id = ? AND lote_id = ? AND activo = 1";
+      return db.query(
+        checkPlano,
+        [plano_id, lote_id],
+        (planoErr, planoRows) => {
+          if (planoErr) {
+            console.error("Error al verificar plano:", planoErr);
+            return res
+              .status(500)
+              .json({ error: "Error al verificar el plano" });
+          }
+
+          if (planoRows.length === 0) {
+            return res
+              .status(400)
+              .json({ error: "El plano seleccionado no pertenece al lote" });
+          }
+
+          continuarConCompra();
         }
       );
-    });
+    }
+
+    continuarConCompra();
   });
 };
 
@@ -362,9 +592,42 @@ const buscarComprasPorCliente = (req, res) => {
   });
 };
 
+const obtenerCuotasCompra = (req, res) => {
+  const compraId = req.params.compra_id;
+  const usuarioId = req.user.id;
+
+  const query = `
+    SELECT 
+      q.id,
+      q.numero_cuota,
+      q.valor_cuota,
+      q.monto_capital,
+      q.monto_interes,
+      q.saldo_restante,
+      q.fecha_vencimiento,
+      q.estado,
+      q.fecha_pago,
+      q.monto_pagado,
+      q.dias_mora,
+      q.interes_moratorio
+    FROM cuotas q
+    INNER JOIN compra c ON c.id = q.compra_id
+    WHERE q.compra_id = ? AND c.usuario_id = ?
+    ORDER BY q.numero_cuota ASC
+  `;
+
+  db.query(query, [compraId, usuarioId], (err, cuotas) => {
+    if (err) {
+      return res.status(500).json({ error: "Error al obtener cuotas" });
+    }
+    res.json({ compra_id: compraId, cuotas });
+  });
+};
+
 module.exports = {
   crearCompra,
   obtenerTodasCompras,
   buscarComprasPorCliente,
+  obtenerCuotasCompra,
   descargarFactura,
 };

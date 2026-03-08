@@ -468,6 +468,83 @@
 
   </main>
 
+  <!-- Modal de Compra con Plan de Cuotas -->
+  <div id="modal-compra-cuotas" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 600px;">
+      <span class="close-modal" onclick="document.getElementById('modal-compra-cuotas').style.display='none'">&times;</span>
+      <h2 style="color: var(--forest); margin-bottom: 20px;">Plan de Pago</h2>
+      
+      <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <h3 id="modal-lote-nombre" style="margin: 0 0 10px; font-size: 18px;"></h3>
+        <p style="margin: 0; font-size: 24px; color: var(--forest); font-weight: bold;" id="modal-lote-precio"></p>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #333;">Seleccione un Plano</label>
+        <div id="planos-gallery" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 15px;">
+          <!-- Los planos se cargarán aquí dinámicamente -->
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label for="porcentaje-enganche">Enganche Inicial</label>
+        <select id="porcentaje-enganche" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+          <option value="0">Sin enganche (0%)</option>
+          <option value="10">10% - Enganche básico</option>
+          <option value="20" selected>20% - Recomendado</option>
+          <option value="30">30% - Mejor tasa</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label for="numero-cuotas">Plazo de Financiamiento</label>
+        <select id="numero-cuotas" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+          <option value="1">Pago único (sin interés)</option>
+          <option value="12" selected>12 meses</option>
+          <option value="24">24 meses</option>
+          <option value="36">36 meses</option>
+          <option value="60">60 meses</option>
+        </select>
+      </div>
+
+      <div id="plan-preview" style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <h4 style="margin-top: 0; color: var(--forest);">Resumen del Plan</h4>
+        <div style="display: grid; gap: 10px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span>Valor del lote:</span>
+            <strong id="preview-valor-lote"></strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Enganche inicial:</span>
+            <strong id="preview-enganche"></strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Saldo a financiar:</span>
+            <strong id="preview-saldo-financiar"></strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding-top: 10px; border-top: 2px solid var(--forest);">
+            <span>Cuota mensual:</span>
+            <strong style="color: var(--forest); font-size: 20px;" id="preview-cuota-mensual"></strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: #666;">
+            <span>Tasa de interés:</span>
+            <span id="preview-tasa">1% mensual</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button id="btn-confirmar-compra" class="btn-primary" style="flex: 1; padding: 12px;">
+          Confirmar Compra
+        </button>
+        <button onclick="document.getElementById('modal-compra-cuotas').style.display='none'" 
+                style="flex: 1; padding: 12px; background: #ccc; border: none; border-radius: 8px; cursor: pointer;">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="../../js/panel.js"></script>
 
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

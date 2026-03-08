@@ -154,7 +154,7 @@ const generarPDFBuffer = (pagoData) => {
 
 const registrarPago = (req, res) => {
   const usuarioId = req.user.id;
-  const { compra_id, monto } = req.body;
+  const { compra_id, monto, cuota_id = null } = req.body;
 
   const getCompra = `
     SELECT c.*, u.correo, u.nombre_usuario, l.numero_lote, l.descripcion, l.area_m2
@@ -181,116 +181,305 @@ const registrarPago = (req, res) => {
         error: "Monto no puede ser mayor al saldo pendiente",
       });
 
-    const insertPago = `
-      INSERT INTO pagos (monto, fecha_pago, compra_id)
-      VALUES (?, CURRENT_DATE(), ?)
-    `;
-
-    db.query(insertPago, [monto, compra_id], async (err, insertResults) => {
-      if (err) {
-        console.error("Error al registrar el pago:", err);
-        return res.status(500).json({
-          error: "Error al registrar el pago",
-          details: err.message,
-        });
-      }
-
-      const pagoId = insertResults.insertId;
-      const nuevoSaldo = Number(compra.saldo_pendiente) - Number(monto);
-      const nuevoEstado = nuevoSaldo === 0 ? "pagado" : "pendiente";
-
-      const updateCompra = `
-        UPDATE compra 
-        SET saldo_pendiente = ?, estado = ?
-        WHERE id = ?
+    // Verificar si la compra tiene plan de cuotas
+    if (compra.numero_cuotas > 1) {
+      // Tiene plan de cuotas: buscar próxima cuota pendiente
+      const getCuotaPendiente = `
+        SELECT * FROM cuotas 
+        WHERE compra_id = ? AND estado = 'pendiente' 
+        ORDER BY numero_cuota ASC 
+        LIMIT 1
       `;
 
-      db.query(
-        updateCompra,
-        [nuevoSaldo, nuevoEstado, compra_id],
-        async (err) => {
-          if (err)
-            return res
-              .status(500)
-              .json({ error: "Error al actualizar la compra" });
+      db.query(getCuotaPendiente, [compra_id], (err, cuotasResults) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "Error al obtener cuota pendiente" });
+        }
 
-          // Generar PDF y enviar email
-          try {
-            const pagoData = {
-              pago_id: pagoId,
-              monto,
-              fecha_pago: new Date().toISOString().split("T")[0],
-              valor_total: compra.valor_total,
-              saldo_actual: nuevoSaldo,
-              numero_lote: compra.numero_lote,
-              descripcion: compra.descripcion,
-              area_m2: compra.area_m2,
-              nombre_usuario: compra.nombre_usuario,
-              correo: compra.correo,
-            };
+        if (cuotasResults.length === 0) {
+          return res.status(400).json({
+            error: "No hay cuotas pendientes para esta compra",
+          });
+        }
 
-            const pdfBuffer = await generarPDFBuffer(pagoData);
+        const cuota = cuotasResults[0];
 
-            const mailOptions = {
-              from: process.env.EMAIL_USER,
-              to: compra.correo,
-              subject: `Comprobante de pago - Altos del Roble - Lote ${compra.numero_lote}`,
-              html: `
-              <h2>¡Gracias por tu pago!</h2>
-              <p>Hola ${compra.nombre_usuario},</p>
-              <p>Te confirmamos que has realizado un pago exitoso de <strong>$${Number(monto).toLocaleString("es-CO")}</strong> para el lote <strong>${compra.numero_lote}</strong>.</p>
-              <p><strong>Detalles del pago:</strong></p>
-              <ul>
-                <li>Número de comprobante: CP-${String(pagoId).padStart(5, "0")}</li>
-                <li>Lote: ${compra.numero_lote}</li>
-                <li>Monto pagado: $${Number(monto).toLocaleString("es-CO")}</li>
-                <li>Saldo pendiente: $${Number(nuevoSaldo).toLocaleString("es-CO")}</li>
-              </ul>
-              <p>Adjunto encontrarás tu comprobante de pago en PDF.</p>
-              <p>Para cualquier consulta, contacta con nosotros.</p>
-              <p>Saludos,<br>Altos del Roble</p>
-            `,
-              attachments: [
-                {
-                  filename: `Comprobante-${pagoId}.pdf`,
-                  content: pdfBuffer,
-                  contentType: "application/pdf",
-                },
-              ],
-            };
+        // Validar que el pago sea al menos el valor de la cuota
+        if (monto < cuota.valor_cuota) {
+          return res.status(400).json({
+            error: `El pago mínimo debe ser ${cuota.valor_cuota.toLocaleString("es-CO")} (valor de la cuota)`,
+            valor_minimo: cuota.valor_cuota,
+          });
+        }
 
-            transporter.sendMail(mailOptions, (err) => {
+        const montoPagado = Number(monto);
+        const montoExcedente = montoPagado - Number(cuota.valor_cuota);
+
+        // Registrar el pago
+        const insertPago = `
+          INSERT INTO pagos (monto, fecha_pago, compra_id, tipo_pago, aplicado_a_cuota, cuota_id)
+          VALUES (?, CURRENT_DATE(), ?, 'cuota', ?, ?)
+        `;
+
+        db.query(
+          insertPago,
+          [montoPagado, compra_id, cuota.numero_cuota, cuota.id],
+          async (err, insertResults) => {
+            if (err) {
+              console.error("Error al registrar el pago:", err);
+              return res.status(500).json({
+                error: "Error al registrar el pago",
+                details: err.message,
+              });
+            }
+
+            const pagoId = insertResults.insertId;
+
+            // Actualizar estado de la cuota
+            const updateCuota = `
+              UPDATE cuotas 
+              SET estado = 'pagado', 
+                  fecha_pago = CURRENT_DATE(), 
+                  monto_pagado = ?
+              WHERE id = ?
+            `;
+
+            db.query(updateCuota, [montoPagado, cuota.id], (err) => {
               if (err) {
-                console.error("[EMAIL] Error enviando comprobante:", err);
-                // No fallar la transacción si el email falla
-                return res.json({
-                  message: "Pago registrado exitosamente",
-                  saldo_restante: nuevoSaldo,
-                  estado_compra: nuevoEstado,
-                  email_enviado: false,
+                return res.status(500).json({
+                  error: "Error al actualizar cuota",
                 });
               }
 
-              console.log(`[EMAIL] Comprobante enviado a: ${compra.correo}`);
-              res.json({
-                message: "Pago registrado y comprobante enviado al correo",
-                saldo_restante: nuevoSaldo,
-                estado_compra: nuevoEstado,
-                email_enviado: true,
-              });
-            });
-          } catch (err) {
-            console.error("[PDF] Error generando PDF:", err);
-            res.json({
-              message: "Pago registrado exitosamente",
-              saldo_restante: nuevoSaldo,
-              estado_compra: nuevoEstado,
-              email_enviado: false,
+              // Actualizar compra
+              const nuevoSaldo = Number(compra.saldo_pendiente) - montoPagado;
+              const nuevoEstado = nuevoSaldo === 0 ? "pagado" : "pendiente";
+              const cuotasPagadas = Number(compra.cuotas_pagadas || 0) + 1;
+
+              const updateCompra = `
+                UPDATE compra 
+                SET saldo_pendiente = ?, estado = ?, cuotas_pagadas = ?
+                WHERE id = ?
+              `;
+
+              db.query(
+                updateCompra,
+                [nuevoSaldo, nuevoEstado, cuotasPagadas, compra_id],
+                async (err) => {
+                  if (err)
+                    return res
+                      .status(500)
+                      .json({ error: "Error al actualizar la compra" });
+
+                  // Generar PDF y enviar email
+                  try {
+                    const pagoData = {
+                      pago_id: pagoId,
+                      monto: montoPagado,
+                      fecha_pago: new Date().toISOString().split("T")[0],
+                      valor_total: compra.valor_total,
+                      saldo_actual: nuevoSaldo,
+                      numero_lote: compra.numero_lote,
+                      descripcion: compra.descripcion,
+                      area_m2: compra.area_m2,
+                      nombre_usuario: compra.nombre_usuario,
+                      correo: compra.correo,
+                      cuota_numero: cuota.numero_cuota,
+                      valor_cuota: cuota.valor_cuota,
+                      excedente: montoExcedente,
+                    };
+
+                    const pdfBuffer = await generarPDFBuffer(pagoData);
+
+                    const mailOptions = {
+                      from: process.env.EMAIL_USER,
+                      to: compra.correo,
+                      subject: `Comprobante de pago - Cuota ${cuota.numero_cuota} - Lote ${compra.numero_lote}`,
+                      html: `
+                      <h2>¡Gracias por tu pago!</h2>
+                      <p>Hola ${compra.nombre_usuario},</p>
+                      <p>Te confirmamos que has realizado el pago de la <strong>Cuota ${cuota.numero_cuota}</strong> de <strong>$${Number(cuota.valor_cuota).toLocaleString("es-CO")}</strong> para el lote <strong>${compra.numero_lote}</strong>.</p>
+                      <p><strong>Detalles del pago:</strong></p>
+                      <ul>
+                        <li>Número de comprobante: CP-${String(pagoId).padStart(5, "0")}</li>
+                        <li>Cuota: ${cuota.numero_cuota} de ${compra.numero_cuotas}</li>
+                        <li>Monto pagado: $${montoPagado.toLocaleString("es-CO")}</li>
+                        ${montoExcedente > 0 ? `<li>Abono extra: $${montoExcedente.toLocaleString("es-CO")}</li>` : ""}
+                        <li>Saldo pendiente: $${Number(nuevoSaldo).toLocaleString("es-CO")}</li>
+                        <li>Cuotas pagadas: ${cuotasPagadas} de ${compra.numero_cuotas}</li>
+                      </ul>
+                      <p>Adjunto encontrarás tu comprobante de pago en PDF.</p>
+                      <p>Para cualquier consulta, contacta con nosotros.</p>
+                      <p>Saludos,<br>Altos del Roble</p>
+                    `,
+                      attachments: [
+                        {
+                          filename: `Comprobante-${pagoId}.pdf`,
+                          content: pdfBuffer,
+                          contentType: "application/pdf",
+                        },
+                      ],
+                    };
+
+                    transporter.sendMail(mailOptions, (err) => {
+                      if (err) {
+                        console.error(
+                          "[EMAIL] Error enviando comprobante:",
+                          err
+                        );
+                        return res.json({
+                          message: "Pago de cuota registrado exitosamente",
+                          saldo_restante: nuevoSaldo,
+                          estado_compra: nuevoEstado,
+                          cuota_pagada: cuota.numero_cuota,
+                          cuotas_totales: compra.numero_cuotas,
+                          email_enviado: false,
+                        });
+                      }
+
+                      console.log(
+                        `[EMAIL] Comprobante enviado a: ${compra.correo}`
+                      );
+                      res.json({
+                        message:
+                          "Pago de cuota registrado y comprobante enviado al correo",
+                        saldo_restante: nuevoSaldo,
+                        estado_compra: nuevoEstado,
+                        cuota_pagada: cuota.numero_cuota,
+                        cuotas_totales: compra.numero_cuotas,
+                        email_enviado: true,
+                      });
+                    });
+                  } catch (err) {
+                    console.error("[PDF] Error generando PDF:", err);
+                    res.json({
+                      message: "Pago de cuota registrado exitosamente",
+                      saldo_restante: nuevoSaldo,
+                      estado_compra: nuevoEstado,
+                      cuota_pagada: cuota.numero_cuota,
+                      email_enviado: false,
+                    });
+                  }
+                }
+              );
             });
           }
+        );
+      });
+    } else {
+      // No tiene plan de cuotas: pago libre (legacy)
+      const insertPago = `
+        INSERT INTO pagos (monto, fecha_pago, compra_id, tipo_pago)
+        VALUES (?, CURRENT_DATE(), ?, 'abono_extra')
+      `;
+
+      db.query(insertPago, [monto, compra_id], async (err, insertResults) => {
+        if (err) {
+          console.error("Error al registrar el pago:", err);
+          return res.status(500).json({
+            error: "Error al registrar el pago",
+            details: err.message,
+          });
         }
-      );
-    });
+
+        const pagoId = insertResults.insertId;
+        const nuevoSaldo = Number(compra.saldo_pendiente) - Number(monto);
+        const nuevoEstado = nuevoSaldo === 0 ? "pagado" : "pendiente";
+
+        const updateCompra = `
+          UPDATE compra 
+          SET saldo_pendiente = ?, estado = ?
+          WHERE id = ?
+        `;
+
+        db.query(
+          updateCompra,
+          [nuevoSaldo, nuevoEstado, compra_id],
+          async (err) => {
+            if (err)
+              return res
+                .status(500)
+                .json({ error: "Error al actualizar la compra" });
+
+            // Generar PDF y enviar email (código legacy)
+            try {
+              const pagoData = {
+                pago_id: pagoId,
+                monto,
+                fecha_pago: new Date().toISOString().split("T")[0],
+                valor_total: compra.valor_total,
+                saldo_actual: nuevoSaldo,
+                numero_lote: compra.numero_lote,
+                descripcion: compra.descripcion,
+                area_m2: compra.area_m2,
+                nombre_usuario: compra.nombre_usuario,
+                correo: compra.correo,
+              };
+
+              const pdfBuffer = await generarPDFBuffer(pagoData);
+
+              const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: compra.correo,
+                subject: `Comprobante de pago - Altos del Roble - Lote ${compra.numero_lote}`,
+                html: `
+                <h2>¡Gracias por tu pago!</h2>
+                <p>Hola ${compra.nombre_usuario},</p>
+                <p>Te confirmamos que has realizado un pago exitoso de <strong>$${Number(monto).toLocaleString("es-CO")}</strong> para el lote <strong>${compra.numero_lote}</strong>.</p>
+                <p><strong>Detalles del pago:</strong></p>
+                <ul>
+                  <li>Número de comprobante: CP-${String(pagoId).padStart(5, "0")}</li>
+                  <li>Lote: ${compra.numero_lote}</li>
+                  <li>Monto pagado: $${Number(monto).toLocaleString("es-CO")}</li>
+                  <li>Saldo pendiente: $${Number(nuevoSaldo).toLocaleString("es-CO")}</li>
+                </ul>
+                <p>Adjunto encontrarás tu comprobante de pago en PDF.</p>
+                <p>Para cualquier consulta, contacta con nosotros.</p>
+                <p>Saludos,<br>Altos del Roble</p>
+              `,
+                attachments: [
+                  {
+                    filename: `Comprobante-${pagoId}.pdf`,
+                    content: pdfBuffer,
+                    contentType: "application/pdf",
+                  },
+                ],
+              };
+
+              transporter.sendMail(mailOptions, (err) => {
+                if (err) {
+                  console.error("[EMAIL] Error enviando comprobante:", err);
+                  return res.json({
+                    message: "Pago registrado exitosamente",
+                    saldo_restante: nuevoSaldo,
+                    estado_compra: nuevoEstado,
+                    email_enviado: false,
+                  });
+                }
+
+                console.log(`[EMAIL] Comprobante enviado a: ${compra.correo}`);
+                res.json({
+                  message: "Pago registrado y comprobante enviado al correo",
+                  saldo_restante: nuevoSaldo,
+                  estado_compra: nuevoEstado,
+                  email_enviado: true,
+                });
+              });
+            } catch (err) {
+              console.error("[PDF] Error generando PDF:", err);
+              res.json({
+                message: "Pago registrado exitosamente",
+                saldo_restante: nuevoSaldo,
+                estado_compra: nuevoEstado,
+                email_enviado: false,
+              });
+            }
+          }
+        );
+      });
+    }
   });
 };
 

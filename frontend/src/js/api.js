@@ -3,7 +3,7 @@
  * Maneja autenticación, token y errores
  */
 
-const API_BASE = "http://localhost:3000/api";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000/api";
 
 class APIClient {
   constructor(baseURL = API_BASE) {
@@ -96,9 +96,47 @@ class APIClient {
     return this.request("/lotes", "POST", data, true);
   }
 
+  async getPlanosLote(lote_id) {
+    return this.request(`/lotes/${lote_id}/planos`, "GET", null, false);
+  }
+
+  // Admin: Gestión de planos
+  async createPlano(data) {
+    return this.request("/lotes/planos", "POST", data, true);
+  }
+
+  async getTodosPlanos() {
+    return this.request("/lotes/planos/all", "GET", null, true);
+  }
+
+  async updatePlano(id, data) {
+    return this.request(`/lotes/planos/${id}`, "PUT", data, true);
+  }
+
+  async deletePlano(id) {
+    return this.request(`/lotes/planos/${id}`, "DELETE", null, true);
+  }
+
   // ─── COMPRAS ───
-  async createCompra(lote_id, valor_inicial) {
-    return this.request("/compra", "POST", { lote_id, valor_inicial }, true);
+  async createCompra(
+    lote_id,
+    valor_inicial,
+    porcentaje_enganche = 0,
+    numero_cuotas = 1,
+    plano_id = null,
+  ) {
+    return this.request(
+      "/compra",
+      "POST",
+      {
+        lote_id,
+        valor_inicial,
+        porcentaje_enganche,
+        numero_cuotas,
+        plano_id,
+      },
+      true,
+    );
   }
 
   async getMisCompras() {
@@ -107,6 +145,10 @@ class APIClient {
 
   async getTodasCompras() {
     return this.request("/compra/admin/todas", "GET", null, true);
+  }
+
+  async getCuotasCompra(compra_id) {
+    return this.request(`/compra/${compra_id}/cuotas`, "GET", null, true);
   }
 
   // ─── PAGOS ───

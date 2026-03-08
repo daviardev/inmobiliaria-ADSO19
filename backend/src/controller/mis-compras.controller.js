@@ -9,6 +9,11 @@ const misCompras = (req, res) => {
       c.fecha_compra,
       c.valor_total,
       c.saldo_pendiente,
+      c.numero_cuotas,
+      c.cuotas_pagadas,
+      c.porcentaje_enganche,
+      c.valor_cuota,
+      c.plano_id,
       l.id as lote_id,
       l.numero_lote,
       l.estado as estado_lote,
@@ -18,9 +23,12 @@ const misCompras = (req, res) => {
       l.banos,
       l.area_construida,
       l.etapa_id,
-      l.image_url
+      l.image_url,
+      lp.nombre as plano_nombre,
+      lp.image_url as plano_image_url
     FROM compra c
     JOIN lotes l ON l.id = c.lote_id
+    LEFT JOIN lote_planos lp ON lp.id = c.plano_id
     WHERE c.usuario_id = ?
     ORDER BY c.fecha_compra DESC
   `;

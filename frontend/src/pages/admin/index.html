@@ -38,6 +38,7 @@
       <ul>
         <li><a href="#inicio" class="nav-link active" data-section="inicio"><ion-icon name="speedometer-outline"></ion-icon> Resumen</a></li>
         <li><a href="#lotes" class="nav-link" data-section="lotes"><ion-icon name="map-outline"></ion-icon> Gestión de lotes</a></li>
+        <li><a href="#planos" class="nav-link" data-section="planos"><ion-icon name="images-outline"></ion-icon> Planos</a></li>
         <li><a href="#compras" class="nav-link" data-section="compras"><ion-icon name="receipt-outline"></ion-icon> Compras</a></li>
         <li><a href="#pqrs" class="nav-link" data-section="pqrs"><ion-icon name="chatbox-ellipses-outline"></ion-icon> PQRS</a></li>
       </ul>
@@ -131,6 +132,55 @@
               </tr>
             </thead>
             <tbody id="admin-lotes-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="planos" class="section">
+      <p class="section-subtitle">Administrar planos de lotes</p>
+      <h2 class="section-title">Gestión de Planos</h2>
+
+      <div class="perfil-layout" style="grid-template-columns: 1fr 1fr;">
+        <div class="info-form">
+          <h3>Crear nuevo plano</h3>
+          <form id="admin-plano-form">
+            <div class="form-group">
+              <label>Lote ID</label>
+              <input type="number" id="plano-lote-id" name="lote_id" min="1" placeholder="ID del lote" required>
+              <small style="color:#666;">Ingresa el ID del lote para asociar el plano</small>
+            </div>
+            <div class="form-group">
+              <label>Nombre del plano</label>
+              <input type="text" id="plano-nombre" name="nombre" placeholder="Ej: Plano Vista Mar 180m²" required>
+            </div>
+            <div class="form-group">
+              <label>URL de imagen</label>
+              <input type="url" id="plano-image-url" name="image_url" placeholder="https://..." required>
+            </div>
+            <div class="form-group">
+              <label>Descripción</label>
+              <textarea id="plano-descripcion" name="descripcion" rows="3" placeholder="Descripción del plano"></textarea>
+            </div>
+            <div class="form-group" style="margin-top:20px;">
+              <button type="submit" class="btn-primary">Crear plano</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="table-card" style="overflow-x:auto;">
+          <h3>Todos los planos</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Lote</th>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-planos-tbody"></tbody>
           </table>
         </div>
       </div>

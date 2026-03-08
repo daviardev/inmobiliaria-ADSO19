@@ -257,10 +257,11 @@ function updateSummary(lotes, compras, pqrsList) {
 async function loadAll() {
   showLoader("Cargando panel administrativo...");
   try {
-    const [lotes, compras, pqrsList] = await Promise.all([
+    const [lotes, compras, pqrsList, planos] = await Promise.all([
       loadLotes(),
       loadCompras(),
       loadPQRS(),
+      loadPlanos(),
     ]);
 
     updateSummary(lotes, compras, pqrsList);
@@ -315,6 +316,125 @@ function setupLoteForm() {
       showAlert(error.message || "No fue posible crear el lote", "error");
     } finally {
       hideLoader();
+    }
+  });
+}
+
+async function loadPlanos() {
+  const tbody = document.getElementById("admin-planos-tbody");
+  if (!tbody) return [];
+
+  const response = await api.getTodosPlanos();
+  const planos = response?.planos || [];
+
+  if (!planos.length) {
+    tbody.innerHTML =
+      '<tr><td colspan="5">No hay planos registrados.</td></tr>';
+    return planos;
+  }
+
+  tbody.innerHTML = planos
+    .map(
+      (plano) => `
+      <tr>
+        <td>${plano.id}</td>
+        <td><strong>${plano.numero_lote || "—"}</strong></td>
+        <td>${plano.nombre || "—"}</td>
+        <td><span class="badge ${plano.activo ? "verde" : "rojo"}">${plano.activo ? "Activo" : "Inactivo"}</span></td>
+        <td style="white-space: nowrap;">
+          ${
+            plano.activo
+              ? `<button class="btn-sm btn-danger plano-toggle-btn" data-id="${plano.id}" data-action="desactivar">Desactivar</button>`
+              : `<button class="btn-sm btn-success plano-toggle-btn" data-id="${plano.id}" data-action="activar">Activar</button>`
+          }
+        </td>
+      </tr>
+    `,
+    )
+    .join("");
+
+  return planos;
+}
+
+function setupPlanoForm() {
+  const form = document.getElementById("admin-plano-form");
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    clearFormErrors("admin-plano-form");
+
+    const data = Object.fromEntries(new FormData(form).entries());
+    const errors = {};
+
+    if (!data.lote_id || Number(data.lote_id) <= 0)
+      errors.lote_id = "El ID del lote es obligatorio";
+    if (!data.nombre?.trim())
+      errors.nombre = "El nombre del plano es obligatorio";
+    if (!data.image_url?.trim())
+      errors.image_url = "La URL de imagen es obligatoria";
+
+    if (Object.keys(errors).length) {
+      displayFormErrors(errors, "admin-plano-form");
+      showAlert("Corrige los errores del formulario", "error");
+      return;
+    }
+
+    showLoader("Creando plano...");
+    try {
+      await api.createPlano({
+        lote_id: Number(data.lote_id),
+        nombre: data.nombre.trim(),
+        image_url: data.image_url.trim(),
+        descripcion: data.descripcion?.trim() || null,
+      });
+
+      form.reset();
+      showAlert("Plano creado exitosamente", "success");
+      await loadAll();
+    } catch (error) {
+      showAlert(error.message || "No fue posible crear el plano", "error");
+    } finally {
+      hideLoader();
+    }
+  });
+}
+
+function setupPlanoToggle() {
+  document.addEventListener("click", async (e) => {
+    const button = e.target.closest(".plano-toggle-btn");
+    if (!button) return;
+
+    const id = Number(button.dataset.id);
+    const action = button.dataset.action;
+
+    if (!id) return;
+
+    const confirmMsg =
+      action === "desactivar"
+        ? "¿Desactivar este plano? Los clientes no podrán seleccionarlo."
+        : "¿Activar este plano?";
+
+    if (!confirm(confirmMsg)) return;
+
+    button.disabled = true;
+    const originalText = button.textContent;
+    button.textContent = "Procesando...";
+
+    try {
+      if (action === "desactivar") {
+        await api.deletePlano(id);
+        showAlert("Plano desactivado correctamente", "success");
+      } else {
+        await api.updatePlano(id, { activo: 1 });
+        showAlert("Plano activado correctamente", "success");
+      }
+      await loadAll();
+    } catch (error) {
+      showAlert(error.message || "No se pudo cambiar el estado", "error");
+    } finally {
+      button.disabled = false;
+      button.textContent = originalText;
     }
   });
 }
@@ -387,6 +507,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   setAdminProfile();
   setupNavigation();
   setupLoteForm();
+  setupPlanoForm();
+  setupPlanoToggle();
   setupPQRSReply();
 
   const logoutBtn = document.getElementById("logout-btn");
