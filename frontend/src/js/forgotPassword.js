@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:3000/api/auth";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000/api";
 
 document.getElementById("forgot-form").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -11,12 +11,12 @@ document.getElementById("forgot-form").addEventListener("submit", async (e) => {
   msg.textContent = "Enviando correo...";
 
   console.log("[FORGOT-PASSWORD] Request:", {
-    url: `${API_BASE}/recover-password`,
+    url: `${API_BASE}/auth/recover-password`,
     payload: { correo },
   });
 
   try {
-    const res = await fetch(`${API_BASE}/recover-password`, {
+    const res = await fetch(`${API_BASE}/auth/recover-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ correo }),

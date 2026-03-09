@@ -45,7 +45,15 @@ class APIClient {
 
       const res = await fetch(url, options);
       const text = await res.text();
-      const data = text ? JSON.parse(text) : {};
+      let data = {};
+      if (text) {
+        try {
+          data = JSON.parse(text);
+        } catch {
+          // Backend may return HTML/text if API base URL is wrong.
+          data = { raw: text };
+        }
+      }
 
       console.log(`[API] Response ${res.status}:`, data);
 
@@ -55,7 +63,12 @@ class APIClient {
           localStorage.removeItem("user");
           window.location.href = "/index.html";
         }
-        throw new Error(data.error || data.message || `Error ${res.status}`);
+        throw new Error(
+          data.error ||
+            data.message ||
+            (typeof data.raw === "string" ? data.raw.slice(0, 120) : null) ||
+            `Error ${res.status}`,
+        );
       }
 
       return data;
