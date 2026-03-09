@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const API_BASE = "http://localhost:3000/api/auth";
+  const API_BASE = import.meta.env.VITE_API_BASE;
   const container = document.querySelector(".container");
 
   const parseResponse = async (res) => {
@@ -40,12 +40,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = Object.fromEntries(new FormData(e.target).entries());
 
       console.log("[AUTH][LOGIN] Request:", {
-        url: `${API_BASE}/login`,
+        url: `${API_BASE}/auth/login`,
         payload: { correo: data.correo, password: "******" },
       });
 
       try {
-        const res = await fetch(`${API_BASE}/login`, {
+        const res = await fetch(`${API_BASE}/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
@@ -111,12 +111,12 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       console.log("[AUTH][REGISTER] Request:", {
-        url: `${API_BASE}/register`,
+        url: `${API_BASE}/auth/register`,
         payload: { ...data, password: "******" },
       });
 
       try {
-        const res = await fetch(`${API_BASE}/register`, {
+        const res = await fetch(`${API_BASE}/auth/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
         msg.textContent = "¡Registro exitoso! Haciendo login automático...";
 
         // Auto-login después del registro
-        const loginRes = await fetch(`${API_BASE}/login`, {
+        const loginRes = await fetch(`${API_BASE}/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
