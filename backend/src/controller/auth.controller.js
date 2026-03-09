@@ -2,18 +2,26 @@ const db = require("../config/db.js");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const dns = require("dns");
 const nodemailer = require("nodemailer");
 
 // Configurar email
 const transporter = nodemailer.createTransport({
   // eslint-disable-next-line no-undef
-  service: process.env.EMAIL_SERVICE,
+  host: process.env.EMAIL_HOST || "smtp.gmail.com",
+  // eslint-disable-next-line no-undef
+  port: Number(process.env.EMAIL_PORT || 465),
+  // eslint-disable-next-line no-undef
+  secure: String(process.env.EMAIL_SECURE || "true") === "true",
   auth: {
     // eslint-disable-next-line no-undef
     user: process.env.EMAIL_USER,
     // eslint-disable-next-line no-undef
     pass: process.env.EMAIL_PASSWORD,
   },
+  // Railway can fail on IPv6 routes; force IPv4 DNS resolution for SMTP.
+  lookup: (hostname, _options, callback) =>
+    dns.lookup(hostname, { family: 4 }, callback),
 });
 
 // Verificar conexión
